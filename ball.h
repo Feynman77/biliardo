@@ -9,12 +9,13 @@ class Ball {
 
  public:
   double getTheta_0() const { return m_theta_0; }
-  void setTheta_0();
+  void setTheta_0(double);
 
   double getY_0() const { return m_theta_0; }
-  void setY_0();
+  void setY_0(double);
 
-  //double const slope(double m) { m = tan(m_theta_0); }
+  Ball(double theta_0, double y_0) : m_theta_0{theta_0}, m_y_0{y_0} {}
+  // double const slope(double m) { m = tan(m_theta_0); }
 };
 
 #endif
