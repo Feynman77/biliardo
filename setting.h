@@ -1,6 +1,9 @@
 #ifndef SETTING_H
 #define SETTING_H
 
+#include "line.h"
+
+
 class Setting {
  private:
   double m_l{};
@@ -18,6 +21,9 @@ class Setting {
   void setR_2(double);
 
   Setting(double l, double r_1, double r_2) : m_l{l}, m_r_1{r_1}, m_r_2{r_2} {}
+
+  Line upLine() {};
+  Line downLine() {};
 };
 
 #endif
