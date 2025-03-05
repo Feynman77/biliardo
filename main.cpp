@@ -72,21 +72,25 @@ int main() {
   if (interception_bottom_line.x < l && interception_bottom_line.x >= 0) {
     new_interception = interception_bottom_line;
     std::cout << "Ball hits bottom line" << '\n';
+    std::cout << new_interception.x << '\n';
+    std::cout << new_interception.y << '\n';
   };
 
   // ball goes directly out
-  //  ci deve essere && al posto di || o sbaglio?
+  //  CASI LIMITE (COME 0)
   if ((interception_top_line.x > l && interception_bottom_line.x < 0) ||
-      (interception_bottom_line.x > l && interception_top_line.x < 0)) {
+      (interception_bottom_line.x > l && interception_top_line.x < 0) ||
+      (interception_top_line.x > l && interception_bottom_line.x > l) ||
+      (interception_top_line.x < 0 && interception_bottom_line.x < 0)) {
     double result{firstThrow.getSlope() * l + firstThrow.getQ()};
-    std::cout << "The final coordinates are x=" << l << "and y=" << result
+    std::cout << "The final coordinates are x=" << l << " and y=" << result
               << '\n';
     return 0;
   };
 
   std::cout << "First hit: done" << '\n';
 
-  Line path(0, 0);
+  Line path(firstThrow.getSlope(), firstThrow.getQ());
 
   // ball bounces (maybe)
   while (last_interception.x <= new_interception.x) {
@@ -100,30 +104,61 @@ int main() {
       return 0;
     };
 
-    // ball hits top line first
+    // ball hits top line first (Francesco)
     if (new_interception.x < l && new_interception.x >= 0 &&
         new_interception.y > 0) {
       // we find the path after hitting the top line
-      path.setSlope((l * firstThrow.getSlope() + r_2 - r_1) /
-                    ((r_2 - r_1) * firstThrow.getSlope() - l));
+      path.setSlope((path.getSlope() * topLine.getSlope() * topLine.getSlope() -
+                     path.getSlope() - 2 * std::abs(topLine.getSlope())) /
+                    (1 - topLine.getSlope() * topLine.getSlope() -
+                     2 * path.getSlope() * std::abs(topLine.getSlope())));
       path.setQ(new_interception.y - path.getSlope() * new_interception.x);
       last_interception = new_interception;
       new_interception = findInterception(path, bottomLine);
       std::cout << "Top line: hit" << '\n';
     };
 
-    // ball hits bottom line first
+    // ball hits top line first (Simone)
+    /*if (new_interception.x < l && new_interception.x >= 0 &&
+        new_interception.y > 0) {
+      // we find the path after hitting the top line
+      path.setSlope((2 * (r_2 - r_1) - firstThrow.getSlope() * l) /
+                    (l + 2 * (r_2 - r_1) * firstThrow.getSlope()));
+      path.setQ(new_interception.y - path.getSlope() * new_interception.x);
+      last_interception = new_interception;
+      new_interception = findInterception(path, bottomLine);
+      std::cout << "Top line: hit" << '\n';
+    };*/
+
+    // ball hits bottom line first (Francesco)
     if (new_interception.x < l && new_interception.x >= 0 &&
         new_interception.y < 0) {
       // we find the path after hitting the bottom line
-      path.setSlope(-1 * ((r_2 - r_1) * firstThrow.getSlope() - l) /
-                    (l * firstThrow.getSlope() + r_2 - r_1));
+      path.setSlope(-path.getSlope());
+
+      path.setSlope(
+          (-1) * ((path.getSlope() * topLine.getSlope() * topLine.getSlope() -
+                   path.getSlope() - 2 * std::abs(topLine.getSlope())) /
+                  (1 - topLine.getSlope() * topLine.getSlope() -
+                   2 * path.getSlope() * std::abs(topLine.getSlope()))));
       path.setQ(new_interception.y - path.getSlope() * new_interception.x);
 
       last_interception = new_interception;
       new_interception = findInterception(path, topLine);
       std::cout << "Bottom line: hit" << '\n';
     };
+
+    // ball hits bottom line first (Simone)
+    /*if (new_interception.x < l && new_interception.x >= 0 &&
+        new_interception.y > 0) {
+      // we find the path after hitting the bottom line
+      path.setSlope(-1 * (2 * (r_2 - r_1) - firstThrow.getSlope() * l) /
+                    (l + 2 * (r_2 - r_1) * firstThrow.getSlope()));
+      path.setQ(new_interception.y - path.getSlope() * new_interception.x);
+      last_interception = new_interception;
+      new_interception = findInterception(path, bottomLine);
+      std::cout << "Top line: hit" << '\n';
+    };*/
 
     // ball goes back
     if (new_interception.x < last_interception.x) {
@@ -137,5 +172,3 @@ int main() {
       << "Out of while (means no return 0 inside while activated. This is bad)"
       << '\n';
 }
-
-// Se togliessimo 7 gradi otterremo l'angolo giusto lol
