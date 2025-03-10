@@ -1,8 +1,17 @@
+#include <SFML/Graphics/CircleShape.hpp>
 #include <cmath>
 #include <iostream>
+#include <SFML/Graphics/RenderWindow.hpp>
 
 #include "ForwardDeclaration.h"
+/* #include "TCanvas.h"
+#include "TF1.h"
+#include "TFile.h"
+#include "TH1F.h"
+#include "TMath.h"
+#include "TRandom.h" */
 #include "line.h"
+#include "graphic.h"
 
 Setup getParametersFromUser() {
   Setup s;
@@ -80,10 +89,12 @@ Point calculateFirstHit(Point interception_top_line,
 }
 
 Point getFinalPoint(Point new_interception, Point last_interception,
-                    System system, Setup setup) {
+                    System system, Setup setup, sf::CircleShape& ball,
+                    double speed, sf::RenderWindow& window) {
   Line path(system.first_throw.getSlope(), system.first_throw.getQ());
 
   // ball bounces (maybe)
+
   while (last_interception.x <= new_interception.x) {
     std::cout << "While loop" << '\n';
 
@@ -98,6 +109,7 @@ Point getFinalPoint(Point new_interception, Point last_interception,
     // ball hits top line first (Francesco)
     if (new_interception.x < setup.l && new_interception.x >= 0 &&
         new_interception.y > 0) {
+          openWindow(window, ball, 25*setup.l, 25*setup.r_1, 25*setup.r_2, 25*setup.y_0, speed, path, new_interception);
       // we find the path after hitting the top line
       path.setSlope(
           (path.getSlope() * system.top_line.getSlope() *
@@ -107,7 +119,10 @@ Point getFinalPoint(Point new_interception, Point last_interception,
            2 * path.getSlope() * std::abs(system.top_line.getSlope())));
       path.setQ(new_interception.y - path.getSlope() * new_interception.x);
       last_interception = new_interception;
+
+      
       new_interception = findInterception(path, system.bottom_line);
+
       std::cout << "Top line: hit" << '\n';
     };
 
@@ -127,6 +142,7 @@ Point getFinalPoint(Point new_interception, Point last_interception,
       path.setQ(new_interception.y - path.getSlope() * new_interception.x);
 
       last_interception = new_interception;
+      openWindow(window, ball, 25*setup.l, 25*setup.r_1, 25*setup.r_2, 25*setup.y_0, speed, path, new_interception);
       new_interception = findInterception(path, system.top_line);
       std::cout << "Bottom line: hit" << '\n';
     };
@@ -143,3 +159,44 @@ Point getFinalPoint(Point new_interception, Point last_interception,
   Point p{};
   return p;
 }
+
+/*void getNormalDistribution(Setup setup) {
+  double sigma_y;
+  double sigma_theta;
+  int n;
+  TH1F *h1 = new TH1F("Isto1", "Final points", 200, -10, 10);
+
+  std::cout << "Insert sigma y_0, sigma theta_0 and number of iterations."
+            << '\n';
+  std::cin >> sigma_y >> sigma_theta >> n;
+
+  for (int i{0}; i < n; i++) {
+    double theta = gRandom->Gaus(setup.theta_0, sigma_theta);
+    double y = gRandom->Gaus(setup.y_0, sigma_y);
+    Setup setup_gaus{y, theta, setup.l, setup.r_1, setup.r_2};
+    System system(makeSystemFromSetup(setup_gaus));
+
+    Point interception_top_line{
+        findInterception(system.top_line, system.first_throw)};
+    Point interception_bottom_line{
+        findInterception(system.bottom_line, system.first_throw)};
+    Point last_interception{0, 0};
+    Point new_interception{calculateFirstHit(
+        interception_top_line, interception_bottom_line, setup_gaus, system)};
+
+    Point final_point{
+        getFinalPoint(new_interception, last_interception, system, setup_gaus)};
+
+    h1->Fill(final_point.y);
+  }
+
+  // h1->Fit("gaus");
+  double_t mean{h1->GetMean()};
+  std::cout << "Mean = " << mean << '\n';
+  std::cout << "STDeav = " << h1->GetRMS() << '\n';
+  std::cout << "Skewness: " << h1->GetSkewness() << '\n';
+  std::cout << "Kurtosis: " << h1->GetKurtosis() << '\n';
+  std::cout << "Entries in the histogram: " << h1->GetEntries() << std::endl;
+
+  h1->Draw();
+}*/

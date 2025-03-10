@@ -22,12 +22,17 @@ string(APPEND CMAKE_EXE_LINKER_FLAGS_DEBUG " -fsanitize=address,undefined -fno-o
 
 # richiedi il componente graphics della libreria SFML, versione 2.5
 #   le dipendenze vengono identificate automaticamente
-find_package(SFML 2.5 COMPONENTS graphics REQUIRED)
+find_package(SFML 2.5 COMPONENTS graphics window system REQUIRED)
 
-add_executable(biliardo main.cpp functionDefinitions.cpp)
-target_link_libraries(biliardo PRIVATE sfml-graphics)
+# execute_process((COMMAND root-config --cflags OUTPUT_VARIABLE ROOT_CFLAGS))
+
+
+add_executable( biliardo main.cpp functionDefinitions.cpp graphic.cpp)
+# target_compile_options(bilardo PRIVATE ${ROOT_CFLAGS})
+target_link_libraries( biliardo PRIVATE sfml-graphics sfml-window sfml-system)
 
 # se il testing e' abilitato...
+
 #   per disabilitare il testing, passare -DBUILD_TESTING=OFF a cmake durante la fase di configurazione
 if (BUILD_TESTING)
 

@@ -1,6 +1,9 @@
 #ifndef FORWARDDECLARATION_H
 #define FORWARDDECLARATION_H
 
+#include <SFML/Graphics/CircleShape.hpp>
+#include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Window.hpp>
 #include <cmath>
 #include <iostream>
 
@@ -40,6 +43,9 @@ Point calculateFirstHit(Point interception_top_line,
                         System system);
 
 Point getFinalPoint(Point new_interception, Point last_interception,
-                    System system, Setup setup);
+  System system, Setup setup, sf::CircleShape& ball,
+  double speed, sf::RenderWindow& window);
+
+void getNormalDistribution(Setup setup);
 
 #endif
