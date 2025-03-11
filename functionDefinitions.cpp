@@ -1,7 +1,8 @@
 #include <SFML/Graphics/CircleShape.hpp>
+#include <SFML/Graphics/RenderWindow.hpp>
 #include <cmath>
 #include <iostream>
-#include <SFML/Graphics/RenderWindow.hpp>
+#include <vector>
 
 #include "ForwardDeclaration.h"
 /* #include "TCanvas.h"
@@ -10,8 +11,8 @@
 #include "TH1F.h"
 #include "TMath.h"
 #include "TRandom.h" */
-#include "line.h"
 #include "graphic.h"
+#include "line.h"
 
 Setup getParametersFromUser() {
   Setup s;
@@ -88,9 +89,23 @@ Point calculateFirstHit(Point interception_top_line,
   return new_interception;
 }
 
+std::vector<Point> fillVector(std::vector<Point> positions,
+                              Point last_interception, Point new_interception,
+                              Line path, double speed) {
+  do {
+    double i{0};
+    double x =
+        last_interception.x + i * (speed / 30) * cos(atan(path.getSlope()));
+    Point position{x, path.getSlope() * x + path.getQ()};
+
+    positions.emplace_back(position);
+  } while (positions.back().x < new_interception.x);
+
+  return positions;
+}
+
 Point getFinalPoint(Point new_interception, Point last_interception,
-                    System system, Setup setup, sf::CircleShape& ball,
-                    double speed, sf::RenderWindow& window) {
+                    System system, Setup setup, std::vector<Point> positions) {
   Line path(system.first_throw.getSlope(), system.first_throw.getQ());
 
   // ball bounces (maybe)
@@ -100,6 +115,7 @@ Point getFinalPoint(Point new_interception, Point last_interception,
 
     // valid throw final path
     if (new_interception.x >= setup.l) {
+      fillVector(positions, last_interception, new_interception, path, 25);
       double result{path.getSlope() * setup.l + path.getQ()};
       std::cout << " The final coordinates are x=" << setup.l
                 << " and y=" << result << '\n';
@@ -109,8 +125,8 @@ Point getFinalPoint(Point new_interception, Point last_interception,
     // ball hits top line first (Francesco)
     if (new_interception.x < setup.l && new_interception.x >= 0 &&
         new_interception.y > 0) {
-          openWindow(window, ball, 25*setup.l, 25*setup.r_1, 25*setup.r_2, 25*setup.y_0, speed, path, new_interception);
       // we find the path after hitting the top line
+      fillVector(positions, last_interception, new_interception, path, 25);
       path.setSlope(
           (path.getSlope() * system.top_line.getSlope() *
                system.top_line.getSlope() -
@@ -120,7 +136,6 @@ Point getFinalPoint(Point new_interception, Point last_interception,
       path.setQ(new_interception.y - path.getSlope() * new_interception.x);
       last_interception = new_interception;
 
-      
       new_interception = findInterception(path, system.bottom_line);
 
       std::cout << "Top line: hit" << '\n';
@@ -129,9 +144,9 @@ Point getFinalPoint(Point new_interception, Point last_interception,
     // ball hits bottom line first (Francesco)
     if (new_interception.x < setup.l && new_interception.x >= 0 &&
         new_interception.y < 0) {
+      fillVector(positions, last_interception, new_interception, path, 25);
       // we find the path after hitting the bottom line
       path.setSlope(-path.getSlope());
-
       path.setSlope(
           (-1) *
           (path.getSlope() * system.top_line.getSlope() *
@@ -142,7 +157,6 @@ Point getFinalPoint(Point new_interception, Point last_interception,
       path.setQ(new_interception.y - path.getSlope() * new_interception.x);
 
       last_interception = new_interception;
-      openWindow(window, ball, 25*setup.l, 25*setup.r_1, 25*setup.r_2, 25*setup.y_0, speed, path, new_interception);
       new_interception = findInterception(path, system.top_line);
       std::cout << "Bottom line: hit" << '\n';
     };

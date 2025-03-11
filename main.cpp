@@ -1,4 +1,5 @@
 #include <cmath>
+#include <vector>
 
 #include "ForwardDeclaration.h"
 #include "graphic.h"
@@ -25,10 +26,10 @@
 int main() {
   Setup setup(getParametersFromUser());
 
-  double speed{10};
+  double speed{25};
   sf::RenderWindow window;
   window.setFramerateLimit(30);
-  sf::CircleShape ball(3);
+  sf::CircleShape ball(1);
 
   // dobbiamo riscalare io propongo tipo moltiplicando per 25
  
@@ -45,9 +46,12 @@ int main() {
 
       
       window.create(sf::VideoMode(800, 600), "Biliardo");
+      std::vector<Point> positions;
   Point final_point{
-      getFinalPoint(new_interception, last_interception, system, setup, ball, speed, window)
+      getFinalPoint(new_interception, last_interception, system, setup, positions)
     };
+
+    openWindow(window, ball, setup.l, setup.r_1, setup.r_2, setup.y_0, positions);
 
 
     return 0;
