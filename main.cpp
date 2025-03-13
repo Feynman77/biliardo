@@ -12,8 +12,6 @@ int main() {
 
   sf::CircleShape ball(1);
 
-  // dobbiamo riscalare io propongo tipo moltiplicando per 25
-
   System system(makeSystemFromSetup(setup));
 
   Point interception_top_line{
@@ -45,5 +43,5 @@ implementare bottoni e imput a schermo e non aq terminale, così come gli output
 facoltativo: implementare linea tratteggiata per percorso,
 separare parte gaussiane con resto,
 bisognerebbe introdurre la variabile di scala e speed, le usiamo troppo spesso,
-possibilità di salvare i grafici da qualche altra parte, 
+possibilità di salvare i grafici da qualche altra parte,
 miglorare nomi. */

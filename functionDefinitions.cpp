@@ -114,8 +114,6 @@ Point getFinalPoint(Point new_interception, Point last_interception,
   // ball bounces (maybe)
 
   while (last_interception.x <= new_interception.x) {
-    std::cout << "While loop" << '\n';
-
     // valid throw final path
     if (new_interception.x >= setup.l) {
       fillVector(positions, last_interception, new_interception, path, 1);
@@ -142,8 +140,6 @@ Point getFinalPoint(Point new_interception, Point last_interception,
       last_interception = new_interception;
 
       new_interception = findInterception(path, system.bottom_line);
-
-      std::cout << "Top line: hit" << '\n';
     };
 
     // ball hits bottom line first (Francesco)
@@ -163,7 +159,6 @@ Point getFinalPoint(Point new_interception, Point last_interception,
 
       last_interception = new_interception;
       new_interception = findInterception(path, system.top_line);
-      std::cout << "Bottom line: hit" << '\n';
     };
 
     // ball goes back
@@ -186,8 +181,6 @@ Point calculateFinalPoint(Point new_interception, Point last_interception,
   // ball bounces (maybe)
 
   while (last_interception.x <= new_interception.x) {
-   
-
     // valid throw final path
     if (new_interception.x >= setup.l) {
       double result{path.getSlope() * setup.l + path.getQ()};
@@ -212,8 +205,6 @@ Point calculateFinalPoint(Point new_interception, Point last_interception,
       last_interception = new_interception;
 
       new_interception = findInterception(path, system.bottom_line);
-
-    
     };
 
     // ball hits bottom line first (Francesco)
@@ -232,7 +223,6 @@ Point calculateFinalPoint(Point new_interception, Point last_interception,
 
       last_interception = new_interception;
       new_interception = findInterception(path, system.top_line);
-     
     };
 
     // ball goes back
@@ -250,7 +240,7 @@ void getNormalDistribution(Setup& setup) {
   double sigma_theta;
   int n;
   TH1F h1("Isto1", "Final points", 20, -setup.r_2, setup.r_2);
-  TH1F h2("Isto2", "Final angles", 100, -M_PI, M_PI );
+  TH1F h2("Isto2", "Final angles", 100, -M_PI, M_PI);
 
   std::cout << "Insert sigma y_0, sigma theta_0 and number of iterations."
             << '\n';
@@ -272,14 +262,10 @@ void getNormalDistribution(Setup& setup) {
 
     Point final_point{calculateFinalPoint(new_interception, last_interception,
                                           system, setup_gaus, h1, h2)};
-
-    // h1.Fill(final_point.y);
   }
 
-  // h1->Fit("gaus");
-
   TCanvas canvas{};
-  canvas.Divide(2,1);
+  canvas.Divide(2, 1);
   canvas.cd(1);
   h1.Draw();
   canvas.cd(2);
@@ -291,12 +277,14 @@ void getNormalDistribution(Setup& setup) {
   std::cout << "STDev of final y = " << h1.GetRMS() << '\n';
   std::cout << "Skewness of final y: " << h1.GetSkewness() << '\n';
   std::cout << "Kurtosis of final y: " << h1.GetKurtosis() << '\n';
-  std::cout << "Entries in the histogram of final y: " << h1.GetEntries() << std::endl;
+  std::cout << "Entries in the histogram of final y: " << h1.GetEntries()
+            << std::endl;
 
   double_t mean_angle{h2.GetMean()};
   std::cout << "Mean of final angle= " << mean_angle << '\n';
   std::cout << "STDeav of final angle= " << h2.GetRMS() << '\n';
   std::cout << "Skewness of final angle: " << h2.GetSkewness() << '\n';
   std::cout << "Kurtosis of final angle: " << h2.GetKurtosis() << '\n';
-  std::cout << "Entries in the histogram of final angle: " << h2.GetEntries() << std::endl;
+  std::cout << "Entries in the histogram of final angle: " << h2.GetEntries()
+            << std::endl;
 }

@@ -7,8 +7,8 @@
 #include <cmath>
 #include <iostream>
 #include <vector>
-#include "TH1F.h"
 
+#include "TH1F.h"
 #include "line.h"
 
 struct Point {
@@ -45,15 +45,14 @@ Point calculateFirstHit(Point interception_top_line,
                         System system);
 
 Point getFinalPoint(Point new_interception, Point last_interception,
-  System system, Setup setup, std::vector<Point>& positions);
+                    System system, Setup setup, std::vector<Point>& positions);
 
-  Point calculateFinalPoint(Point new_interception, Point last_interception,
-    System system, Setup setup, TH1F& h1, TH1F& h2);
+Point calculateFinalPoint(Point new_interception, Point last_interception,
+                          System system, Setup setup, TH1F& h1, TH1F& h2);
 
 void getNormalDistribution(Setup& setup);
 
-void fillVector(std::vector<Point>& positions,
-  Point last_interception, Point new_interception,
-  Line path, double speed);
+void fillVector(std::vector<Point>& positions, Point last_interception,
+                Point new_interception, Line path, double speed);
 
 #endif
