@@ -50,5 +50,7 @@ int main() {
   openWindow(window, ball, 25 * setup.l, 25 * setup.r_1, 25 * setup.r_2,
              25 * setup.y_0, positions);
 
+             getNormalDistribution(setup);
+
   return 0;
 }

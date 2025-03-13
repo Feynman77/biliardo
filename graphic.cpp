@@ -49,6 +49,7 @@ void openWindow(sf::RenderWindow& window, sf::CircleShape& ball, double l,
   // creation of the ball
   ball.setFillColor(sf::Color::White);
   ball.setPosition(0, y_0);
+  ball.setOrigin(ball.getRadius(), ball.getRadius());
 
   int i{0};
   // run the program as long as the window is open
@@ -63,7 +64,6 @@ void openWindow(sf::RenderWindow& window, sf::CircleShape& ball, double l,
         window.close();
       }
     }
-    std::cout << positions.size() << '\n';
     if (i < positions.size()) {
       ball.setPosition(positions[i].x, positions[i].y);
       i++;

@@ -46,7 +46,10 @@ Point calculateFirstHit(Point interception_top_line,
 Point getFinalPoint(Point new_interception, Point last_interception,
   System system, Setup setup, std::vector<Point>& positions);
 
-void getNormalDistribution(Setup setup);
+  Point calculateFinalPoint(Point new_interception, Point last_interception,
+    System system, Setup setup);
+
+void getNormalDistribution(Setup& setup);
 
 void fillVector(std::vector<Point>& positions,
   Point last_interception, Point new_interception,

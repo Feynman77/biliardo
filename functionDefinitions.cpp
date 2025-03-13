@@ -101,12 +101,8 @@ void fillVector(std::vector<Point>& positions, Point last_interception,
         last_interception.x + i * (speed / 30) * cos(atan(path.getSlope()));
     Point position{25 * x, 25 * path.getSlope() * x + 25 * path.getQ()};
 
-    if (position.y>0 && 25*new_interception.x-position.x<3 && 25*new_interception.x-position.x>-3)
-    {
+   positions.emplace_back(position);
       i++;
-    } else
-     {positions.emplace_back(position);
-      i++;}
 
     
   } while (positions.back().x <= 25*new_interception.x);
@@ -182,7 +178,76 @@ Point getFinalPoint(Point new_interception, Point last_interception,
   return p;
 }
 
-/*void getNormalDistribution(Setup setup) {
+Point calculateFinalPoint(Point new_interception, Point last_interception,
+  System system, Setup setup) {
+Line path(system.first_throw.getSlope(), system.first_throw.getQ());
+
+// ball bounces (maybe)
+
+while (last_interception.x <= new_interception.x) {
+std::cout << "While loop" << '\n';
+
+// valid throw final path
+if (new_interception.x >= setup.l) {
+double result{path.getSlope() * setup.l + path.getQ()};
+std::cout << " The final coordinates are x=" << setup.l
+<< " and y=" << result << '\n';
+break;
+};
+
+// ball hits top line first (Francesco)
+if (new_interception.x < setup.l && new_interception.x >= 0 &&
+new_interception.y > 0) {
+// we find the path after hitting the top line
+
+path.setSlope(
+(path.getSlope() * system.top_line.getSlope() *
+system.top_line.getSlope() -
+path.getSlope() - 2 * std::abs(system.top_line.getSlope())) /
+(1 - system.top_line.getSlope() * system.top_line.getSlope() -
+2 * path.getSlope() * std::abs(system.top_line.getSlope())));
+path.setQ(new_interception.y - path.getSlope() * new_interception.x);
+last_interception = new_interception;
+
+new_interception = findInterception(path, system.bottom_line);
+
+std::cout << "Top line: hit" << '\n';
+};
+
+// ball hits bottom line first (Francesco)
+if (new_interception.x < setup.l && new_interception.x >= 0 &&
+new_interception.y < 0) {
+
+// we find the path after hitting the bottom line
+path.setSlope(-path.getSlope());
+path.setSlope(
+(-1) *
+(path.getSlope() * system.top_line.getSlope() *
+system.top_line.getSlope() -
+path.getSlope() - 2 * std::abs(system.top_line.getSlope())) /
+(1 - system.top_line.getSlope() * system.top_line.getSlope() -
+2 * path.getSlope() * std::abs(system.top_line.getSlope())));
+path.setQ(new_interception.y - path.getSlope() * new_interception.x);
+
+last_interception = new_interception;
+new_interception = findInterception(path, system.top_line);
+std::cout << "Bottom line: hit" << '\n';
+};
+
+// ball goes back
+if (new_interception.x < last_interception.x) {
+std::cout
+<< "Invalid throw. The ball went behind the starting line. Try again."
+<< '\n';
+break;
+};
+}
+
+Point p{};
+return p;
+}
+
+void getNormalDistribution(Setup& setup) {
   double sigma_y;
   double sigma_theta;
   int n;
@@ -207,7 +272,7 @@ Point getFinalPoint(Point new_interception, Point last_interception,
         interception_top_line, interception_bottom_line, setup_gaus, system)};
 
     Point final_point{
-        getFinalPoint(new_interception, last_interception, system, setup_gaus)};
+      calculateFinalPoint(new_interception, last_interception, system, setup_gaus)};
 
     h1->Fill(final_point.y);
   }
@@ -221,4 +286,4 @@ Point getFinalPoint(Point new_interception, Point last_interception,
   std::cout << "Entries in the histogram: " << h1->GetEntries() << std::endl;
 
   h1->Draw();
-}*/
+}
