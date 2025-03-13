@@ -101,8 +101,14 @@ void fillVector(std::vector<Point>& positions, Point last_interception,
         last_interception.x + i * (speed / 30) * cos(atan(path.getSlope()));
     Point position{25 * x, 25 * path.getSlope() * x + 25 * path.getQ()};
 
-    positions.emplace_back(position);
-    i++;
+    if (position.y>0 && 25*new_interception.x-position.x<3 && 25*new_interception.x-position.x>-3)
+    {
+      i++;
+    } else
+     {positions.emplace_back(position);
+      i++;}
+
+    
   } while (positions.back().x <= 25*new_interception.x);
 }
 

@@ -19,6 +19,13 @@ void openWindow(sf::RenderWindow& window, sf::CircleShape& ball, double l,
   sf::View view(sf::Vector2f(0, 0), sf::Vector2f(800, 600));
   window.setView(view);
   window.setFramerateLimit(60);
+   // Calcola la posizione per centrarla
+   sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
+   int posX = (desktop.width - window.getSize().x) / 2;
+   int posY = (desktop.height - window.getSize().y) / 2;
+
+   // Imposta la posizione della finestra
+   window.setPosition(sf::Vector2i(posX, posY));
   sf::Clock clock;
   // sf::Window window(sf::VideoMode(400, 300), "My window");
 
