@@ -18,6 +18,7 @@ void openWindow(sf::RenderWindow& window, sf::CircleShape& ball, double l,
                 std::vector<Point> positions) {
   sf::View view(sf::Vector2f(0, 0), sf::Vector2f(800, 600));
   window.setView(view);
+  window.setFramerateLimit(60);
   sf::Clock clock;
   // sf::Window window(sf::VideoMode(400, 300), "My window");
 
@@ -42,20 +43,23 @@ void openWindow(sf::RenderWindow& window, sf::CircleShape& ball, double l,
   ball.setFillColor(sf::Color::White);
   ball.setPosition(0, y_0);
 
+  int i{0};
   // run the program as long as the window is open
   while (window.isOpen()) {
     // check all the window's events that were triggered since the last
     // iteration of the loop
     sf::Event event;
+
     while (window.pollEvent(event)) {
       // "close requested" event: we close the window
       if (event.type == sf::Event::Closed) {
         window.close();
       }
     }
-
-    for (int i{0}; i <= positions.size(); i++) {
+    std::cout << positions.size() << '\n';
+    if (i < positions.size()) {
       ball.setPosition(positions[i].x, positions[i].y);
+      i++;
     }
 
     window.clear();

@@ -26,13 +26,11 @@
 int main() {
   Setup setup(getParametersFromUser());
 
-  double speed{25};
   sf::RenderWindow window;
-  window.setFramerateLimit(30);
+
   sf::CircleShape ball(1);
 
   // dobbiamo riscalare io propongo tipo moltiplicando per 25
- 
 
   System system(makeSystemFromSetup(setup));
 
@@ -44,15 +42,13 @@ int main() {
   Point new_interception{calculateFirstHit(
       interception_top_line, interception_bottom_line, setup, system)};
 
-      
-      window.create(sf::VideoMode(800, 600), "Biliardo");
-      std::vector<Point> positions;
-  Point final_point{
-      getFinalPoint(new_interception, last_interception, system, setup, positions)
-    };
+  window.create(sf::VideoMode(800, 600), "Biliardo");
+  std::vector<Point> positions{};
+  Point final_point{getFinalPoint(new_interception, last_interception, system,
+                                  setup, positions)};
 
-    openWindow(window, ball, setup.l, setup.r_1, setup.r_2, setup.y_0, positions);
+  openWindow(window, ball, 25 * setup.l, 25 * setup.r_1, 25 * setup.r_2,
+             25 * setup.y_0, positions);
 
-
-    return 0;
+  return 0;
 }
