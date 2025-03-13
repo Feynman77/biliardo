@@ -36,3 +36,14 @@ int main() {
 
   return 0;
 }
+
+/*cosa dobbiamo fare:
+ottimizzare,
+migliorare leggibilità,
+toglioere file inutili,
+implementare bottoni e imput a schermo e non aq terminale, così come gli output,
+facoltativo: implementare linea tratteggiata per percorso,
+separare parte gaussiane con resto,
+bisognerebbe introdurre la variabile di scala e speed, le usiamo troppo spesso,
+possibilità di salvare i grafici da qualche altra parte, 
+miglorare nomi. */
