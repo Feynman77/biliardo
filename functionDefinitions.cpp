@@ -5,12 +5,12 @@
 #include <vector>
 
 #include "ForwardDeclaration.h"
-/* #include "TCanvas.h"
+#include "TCanvas.h"
 #include "TF1.h"
 #include "TFile.h"
 #include "TH1F.h"
 #include "TMath.h"
-#include "TRandom.h" */
+#include "TRandom.h"
 #include "graphic.h"
 #include "line.h"
 
@@ -23,7 +23,7 @@ Setup getParametersFromUser() {
   std::cout << "Insert l, r_1 and r_2" << '\n';
   std::cin >> s.l >> s.r_1 >> s.r_2;
   s.y_0 = -y_0;
-  s.theta_0= -theta_0;
+  s.theta_0 = -theta_0;
   return s;
 }
 
@@ -101,15 +101,15 @@ void fillVector(std::vector<Point>& positions, Point last_interception,
         last_interception.x + i * (speed / 30) * cos(atan(path.getSlope()));
     Point position{25 * x, 25 * path.getSlope() * x + 25 * path.getQ()};
 
-   positions.emplace_back(position);
-      i++;
+    positions.emplace_back(position);
+    i++;
 
-    
-  } while (positions.back().x <= 25*new_interception.x);
+  } while (positions.back().x <= 25 * new_interception.x);
 }
 
 Point getFinalPoint(Point new_interception, Point last_interception,
-                    System system, Setup setup, std::vector<Point>& positions) {
+                    System system, Setup setup, std::vector<Point>& positions
+                    ) {
   Line path(system.first_throw.getSlope(), system.first_throw.getQ());
 
   // ball bounces (maybe)
@@ -179,79 +179,79 @@ Point getFinalPoint(Point new_interception, Point last_interception,
 }
 
 Point calculateFinalPoint(Point new_interception, Point last_interception,
-  System system, Setup setup) {
-Line path(system.first_throw.getSlope(), system.first_throw.getQ());
+                          System system, Setup setup, TH1F& h1) {
+  Line path(system.first_throw.getSlope(), system.first_throw.getQ());
 
-// ball bounces (maybe)
+  // ball bounces (maybe)
 
-while (last_interception.x <= new_interception.x) {
-std::cout << "While loop" << '\n';
+  while (last_interception.x <= new_interception.x) {
+    std::cout << "While loop" << '\n';
 
-// valid throw final path
-if (new_interception.x >= setup.l) {
-double result{path.getSlope() * setup.l + path.getQ()};
-std::cout << " The final coordinates are x=" << setup.l
-<< " and y=" << result << '\n';
-break;
-};
+    // valid throw final path
+    if (new_interception.x >= setup.l) {
+      double result{path.getSlope() * setup.l + path.getQ()};
+      std::cout << " The final coordinates are x=" << setup.l
+                << " and y=" << result << '\n';
+                h1.Fill(result);
+      break;
+    };
 
-// ball hits top line first (Francesco)
-if (new_interception.x < setup.l && new_interception.x >= 0 &&
-new_interception.y > 0) {
-// we find the path after hitting the top line
+    // ball hits top line first (Francesco)
+    if (new_interception.x < setup.l && new_interception.x >= 0 &&
+        new_interception.y > 0) {
+      // we find the path after hitting the top line
 
-path.setSlope(
-(path.getSlope() * system.top_line.getSlope() *
-system.top_line.getSlope() -
-path.getSlope() - 2 * std::abs(system.top_line.getSlope())) /
-(1 - system.top_line.getSlope() * system.top_line.getSlope() -
-2 * path.getSlope() * std::abs(system.top_line.getSlope())));
-path.setQ(new_interception.y - path.getSlope() * new_interception.x);
-last_interception = new_interception;
+      path.setSlope(
+          (path.getSlope() * system.top_line.getSlope() *
+               system.top_line.getSlope() -
+           path.getSlope() - 2 * std::abs(system.top_line.getSlope())) /
+          (1 - system.top_line.getSlope() * system.top_line.getSlope() -
+           2 * path.getSlope() * std::abs(system.top_line.getSlope())));
+      path.setQ(new_interception.y - path.getSlope() * new_interception.x);
+      last_interception = new_interception;
 
-new_interception = findInterception(path, system.bottom_line);
+      new_interception = findInterception(path, system.bottom_line);
 
-std::cout << "Top line: hit" << '\n';
-};
+      std::cout << "Top line: hit" << '\n';
+    };
 
-// ball hits bottom line first (Francesco)
-if (new_interception.x < setup.l && new_interception.x >= 0 &&
-new_interception.y < 0) {
+    // ball hits bottom line first (Francesco)
+    if (new_interception.x < setup.l && new_interception.x >= 0 &&
+        new_interception.y < 0) {
+      // we find the path after hitting the bottom line
+      path.setSlope(-path.getSlope());
+      path.setSlope(
+          (-1) *
+          (path.getSlope() * system.top_line.getSlope() *
+               system.top_line.getSlope() -
+           path.getSlope() - 2 * std::abs(system.top_line.getSlope())) /
+          (1 - system.top_line.getSlope() * system.top_line.getSlope() -
+           2 * path.getSlope() * std::abs(system.top_line.getSlope())));
+      path.setQ(new_interception.y - path.getSlope() * new_interception.x);
 
-// we find the path after hitting the bottom line
-path.setSlope(-path.getSlope());
-path.setSlope(
-(-1) *
-(path.getSlope() * system.top_line.getSlope() *
-system.top_line.getSlope() -
-path.getSlope() - 2 * std::abs(system.top_line.getSlope())) /
-(1 - system.top_line.getSlope() * system.top_line.getSlope() -
-2 * path.getSlope() * std::abs(system.top_line.getSlope())));
-path.setQ(new_interception.y - path.getSlope() * new_interception.x);
+      last_interception = new_interception;
+      new_interception = findInterception(path, system.top_line);
+      std::cout << "Bottom line: hit" << '\n';
+    };
 
-last_interception = new_interception;
-new_interception = findInterception(path, system.top_line);
-std::cout << "Bottom line: hit" << '\n';
-};
+    // ball goes back
+    if (new_interception.x < last_interception.x) {
+      std::cout
+          << "Invalid throw. The ball went behind the starting line. Try again."
+          << '\n';
+      break;
+    };
+  }
 
-// ball goes back
-if (new_interception.x < last_interception.x) {
-std::cout
-<< "Invalid throw. The ball went behind the starting line. Try again."
-<< '\n';
-break;
-};
-}
-
-Point p{};
-return p;
+  Point p{};
+  return p;
 }
 
 void getNormalDistribution(Setup& setup) {
   double sigma_y;
   double sigma_theta;
   int n;
-  TH1F *h1 = new TH1F("Isto1", "Final points", 200, -10, 10);
+  TH1F h1("Isto1", "Final points", 200, -10, 10);
 
   std::cout << "Insert sigma y_0, sigma theta_0 and number of iterations."
             << '\n';
@@ -271,19 +271,24 @@ void getNormalDistribution(Setup& setup) {
     Point new_interception{calculateFirstHit(
         interception_top_line, interception_bottom_line, setup_gaus, system)};
 
-    Point final_point{
-      calculateFinalPoint(new_interception, last_interception, system, setup_gaus)};
+    Point final_point{calculateFinalPoint(new_interception, last_interception,
+                                          system, setup_gaus, h1)};
 
-    h1->Fill(final_point.y);
+    // h1.Fill(final_point.y);
   }
 
   // h1->Fit("gaus");
-  double_t mean{h1->GetMean()};
-  std::cout << "Mean = " << mean << '\n';
-  std::cout << "STDeav = " << h1->GetRMS() << '\n';
-  std::cout << "Skewness: " << h1->GetSkewness() << '\n';
-  std::cout << "Kurtosis: " << h1->GetKurtosis() << '\n';
-  std::cout << "Entries in the histogram: " << h1->GetEntries() << std::endl;
 
-  h1->Draw();
+  TCanvas canvas{};
+  h1.Draw();
+  canvas.Print("h1.png");
+
+  double_t mean{h1.GetMean()};
+  std::cout << "Mean = " << mean << '\n';
+  std::cout << "STDeav = " << h1.GetRMS() << '\n';
+  std::cout << "Skewness: " << h1.GetSkewness() << '\n';
+  std::cout << "Kurtosis: " << h1.GetKurtosis() << '\n';
+  std::cout << "Entries in the histogram: " << h1.GetEntries() << std::endl;
+
+  // h1.Draw();
 }
