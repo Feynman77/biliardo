@@ -1,3 +1,4 @@
+#include <TGUI/Widgets/Slider.hpp>
 #include <cmath>
 #include <vector>
 
@@ -9,6 +10,10 @@ int main() {
   Setup setup(getParametersFromUser());
 
   sf::RenderWindow window;
+  tgui::Gui gui{window};
+  fillGui(gui);
+  double scale{25};
+  double speed{1};
 
   sf::CircleShape ball(1);
 
@@ -25,10 +30,10 @@ int main() {
   window.create(sf::VideoMode(800, 600), "Biliardo");
   std::vector<Point> positions{};
   Point final_point{getFinalPoint(new_interception, last_interception, system,
-                                  setup, positions)};
+                                  setup, positions, speed, scale)};
 
-  openWindow(window, ball, 25 * setup.l, 25 * setup.r_1, 25 * setup.r_2,
-             25 * setup.y_0, positions);
+  openWindow(window, ball, scale * setup.l, scale * setup.r_1,
+             scale * setup.r_2, scale * setup.y_0, positions, gui);
 
   getNormalDistribution(setup);
 
@@ -42,6 +47,6 @@ toglioere file inutili,
 implementare bottoni e imput a schermo e non aq terminale, così come gli output,
 facoltativo: implementare linea tratteggiata per percorso,
 separare parte gaussiane con resto,
-bisognerebbe introdurre la variabile di scala e speed, le usiamo troppo spesso,
+
 possibilità di salvare i grafici da qualche altra parte,
 miglorare nomi. */

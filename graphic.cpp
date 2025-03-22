@@ -15,7 +15,7 @@
 
 void openWindow(sf::RenderWindow& window, sf::CircleShape& ball, double l,
                 double r_1, double r_2, double y_0,
-                std::vector<Point> positions) {
+                std::vector<Point> positions, tgui::Gui& gui) {
   sf::View view(sf::Vector2f(0, 0), sf::Vector2f(800, 600));
   window.setView(view);
   window.setFramerateLimit(60);
@@ -58,6 +58,7 @@ void openWindow(sf::RenderWindow& window, sf::CircleShape& ball, double l,
     sf::Event event;
 
     while (window.pollEvent(event)) {
+      gui.handleEvent(event);
       // "close requested" event: we close the window
       if (event.type == sf::Event::Closed) {
         window.close();
@@ -72,6 +73,25 @@ void openWindow(sf::RenderWindow& window, sf::CircleShape& ball, double l,
     window.draw(top_line);
     window.draw(bottom_line);
     window.draw(ball);
+    gui.draw();
     window.display();
   }
+}
+
+auto createBoxSlider(double maximum, double minimum, double x,
+                  double y, double step, double width, double height) {
+                    auto BoxSlider= tgui::EditBoxSlider::create(minimum, maximum);
+                    BoxSlider->setPosition(x,y);
+                    BoxSlider->setSize(width, height);
+                    BoxSlider->setValue((maximum-minimum)/2);
+                    BoxSlider->setStep(step);
+                    return BoxSlider;
+                  }
+
+void fillGui(tgui::Gui& gui) {
+  gui.add(createBoxSlider(10, 0, 0, 20, 1, 200, 20));
+  gui.add(createBoxSlider(10, 0, 250, 20, 1, 200, 20));
+  gui.add(createBoxSlider(10, 0, 0, 45, 1, 200, 20));
+  gui.add(createBoxSlider(10, 0, 250, 45, 1, 200, 20));
+  gui.add(createBoxSlider(10, 0, 0, 70, 1, 200, 20));
 }
