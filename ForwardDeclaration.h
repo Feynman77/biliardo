@@ -4,6 +4,10 @@
 #include <SFML/Graphics/CircleShape.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Window.hpp>
+#include <TGUI/Backend/SFML-Graphics.hpp>
+#include <TGUI/Widgets/EditBox.hpp>
+#include <TGUI/Widgets/EditBoxSlider.hpp>
+#include <TGUI/Widgets/Panel.hpp>
 #include <cmath>
 #include <iostream>
 #include <vector>
@@ -30,7 +34,7 @@ struct System {
   Line first_throw;
 };
 
-Setup getParametersFromUser();
+Setup getParametersFromUser(tgui::Gui&);
 
 Line makeLineFromPoints(Point p1, Point p2);
 

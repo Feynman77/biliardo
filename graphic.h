@@ -26,7 +26,13 @@ void animateBottomHit(sf::RenderWindow& window, sf::CircleShape& ball, double l,
                       Point last_interception);
 
 auto createBoxSlider(double maximum, double minimum, double x, double y,
-                  double step, double width, double height);
+                     double step, double width, double height);
+
+auto createButton(double x, double y, const char* name, double width,
+                  double height);
+
+void makeDrawableSystem(sf::CircleShape& ball, sf::VertexArray& top_line,
+                        sf::VertexArray& bottom_line, Setup& s);
 
 void fillGui(tgui::Gui& gui);
 
