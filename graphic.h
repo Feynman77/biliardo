@@ -16,11 +16,11 @@
 #include "ForwardDeclaration.h"
 #include "line.h"
 
-void openWindow(sf::RenderWindow& window, sf::CircleShape& ball, double l,
+void openWindow(sf::RenderWindow &window, sf::CircleShape &ball, double l,
                 double r_1, double r_2, double y_0,
-                std::vector<Point> positions, tgui::Gui& gui);
+                std::vector<Point> positions, tgui::Gui &gui);
 
-void animateBottomHit(sf::RenderWindow& window, sf::CircleShape& ball, double l,
+void animateBottomHit(sf::RenderWindow &window, sf::CircleShape &ball, double l,
                       double r_1, double r_2, double y_0, double speed,
                       Line path, Point new_interception,
                       Point last_interception);
@@ -28,12 +28,14 @@ void animateBottomHit(sf::RenderWindow& window, sf::CircleShape& ball, double l,
 auto createBoxSlider(double maximum, double minimum, double x, double y,
                      double step, double width, double height);
 
-auto createButton(double x, double y, const char* name, double width,
+auto createButton(double x, double y, const char *name, double width,
                   double height);
 
-void makeDrawableSystem(sf::CircleShape& ball, sf::VertexArray& top_line,
-                        sf::VertexArray& bottom_line, Setup& s);
+auto createLabel(const std::string &text, float x, float y);
 
-void fillGui(tgui::Gui& gui);
+void makeDrawableSystem(sf::CircleShape &ball, sf::VertexArray &top_line,
+                        sf::VertexArray &bottom_line, Setup &s);
+
+void fillGui(tgui::Gui &gui);
 
 #endif

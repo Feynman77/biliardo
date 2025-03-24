@@ -20,16 +20,18 @@ int main() {
   double speed{1};
 
   sf::CircleShape ball(1);
-  window.create(sf::VideoMode(800, 600), "Biliardo");
+  ball.setFillColor(sf::Color::Black);
+  ball.setOutlineColor(sf::Color::Black);
+  window.create(sf::VideoMode(1400, 950), "Biliardo");
 
-  sf::View view(sf::Vector2f(0, 0), sf::Vector2f(800, 600));
+  sf::View view(sf::Vector2f(100, -225), sf::Vector2f(1400, 950));
   window.setView(view);
   window.setFramerateLimit(60);
 
   // Calcola la posizione per centrarla
   sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
   int posX = (desktop.width - window.getSize().x) / 2;
-  int posY = (desktop.height - window.getSize().y) / 2;
+  int posY = (desktop.height - window.getSize().y - 100) / 2;
 
   // Imposta la posizione della finestra
   window.setPosition(sf::Vector2i(posX, posY));
@@ -39,7 +41,6 @@ int main() {
   sf::VertexArray bottom_line(sf::Lines, 2);
 
   int i{0};
-  int j = 0;
 
   std::vector<Point> positions{};
 
@@ -57,17 +58,34 @@ int main() {
   bottom_line[0].color = sf::Color::White;
   bottom_line[1].position = sf::Vector2f(0, 0);
   bottom_line[1].color = sf::Color::White;
+
+  // creation of horizontal and vertical line for layout
+
+  sf::VertexArray hor_line(sf::Lines, 2);
+  sf::VertexArray vert_line(sf::Lines, 2);
+
+  hor_line[0].position = sf::Vector2f(-800, -228);
+  hor_line[0].color = sf::Color::White;
+  hor_line[1].position = sf::Vector2f(800, -228);
+  hor_line[1].color = sf::Color::White;
+
+  vert_line[0].position = sf::Vector2f(-50, -1000);
+  vert_line[0].color = sf::Color::White;
+  vert_line[1].position = sf::Vector2f(-50, -228);
+  vert_line[1].color = sf::Color::White;
+
   Setup setup;
-  //auto picture = gui.get<tgui::Picture>("histograms");
+
+  // auto picture = gui.get<tgui::Picture>("histograms");
+  bool run_pressed = false;
   bool gaus_pressed = false;
   sf::Texture texture;
   sf::Sprite sprite;
-  sprite.setPosition(-400, 0);
-sprite.setScale(0.7, 0.7);
+  sprite.setPosition(-50, -700);
+  sprite.setScale(1.23f, 1.0f);
 
   gui.get<tgui::Button>("gauss")->onClick([&]() { gaus_pressed = true; });
-
-
+  gui.get<tgui::Button>("run")->onClick([&]() { run_pressed = true; });
 
   while (window.isOpen()) {
     sf::Event event;
@@ -85,8 +103,8 @@ sprite.setScale(0.7, 0.7);
         // check all the window's events that were triggered since the last
         // iteration of the loop
         float r_1 = gui.get<tgui::EditBoxSlider>("r_1")->getValue();
-        gui.get<tgui::EditBoxSlider>("y_0")->setMaximum(r_1);
-        gui.get<tgui::EditBoxSlider>("y_0")->setMinimum(-r_1);
+        gui.get<tgui::EditBoxSlider>("y_0")->setMaximum(r_1 - 0.01f);
+        gui.get<tgui::EditBoxSlider>("y_0")->setMinimum(-r_1 + 0.01f);
 
         while (window.pollEvent(event)) {
           gui.handleEvent(event);
@@ -96,7 +114,9 @@ sprite.setScale(0.7, 0.7);
           }
         }
 
-        gui.get<tgui::Button>("run")->onClick([&]() {
+        if (run_pressed == true) {
+          ball.setFillColor(sf::Color::Green); // why isn't it green???
+          ball.setOutlineColor(sf::Color::Green);
           positions.clear();
           setup = (getParametersFromUser(gui));
           makeDrawableSystem(ball, top_line, bottom_line, setup);
@@ -113,7 +133,9 @@ sprite.setScale(0.7, 0.7);
           Point final_point{getFinalPoint(new_interception, last_interception,
                                           system, setup, positions, speed,
                                           scale)};
-        });
+          i = 0;
+          run_pressed = false;
+        };
 
         if (i < positions.size() && positions.size() != 0) {
           ball.setPosition(positions[i].x, positions[i].y);
@@ -132,17 +154,17 @@ sprite.setScale(0.7, 0.7);
           /*gui.get<tgui::Picture>("histograms")
           ->getRenderer()
           ->setTexture("histos.png");*/
-          gaus_pressed = false; 
+          gaus_pressed = false;
           texture.loadFromFile("histos.png");
           sprite.setTexture(texture);
-         /* gui.remove(picture);
+          /* gui.remove(picture);
 
-          picture = tgui::Picture::create("histos.png");
-          picture->setSize(400, 400);
-          picture->setPosition(0, 250);
-          gui.add(picture, "histograms");
-          gaus_pressed = false; */
-        }; 
+           picture = tgui::Picture::create("histos.png");
+           picture->setSize(400, 400);
+           picture->setPosition(0, 250);
+           gui.add(picture, "histograms");
+           gaus_pressed = false; */
+        };
 
         /*gui.get<tgui::Button>("gauss")->onClick([&]() {
           if (j == 0) {
@@ -159,6 +181,8 @@ sprite.setScale(0.7, 0.7);
         });*/
 
         window.clear();
+        window.draw(hor_line);
+        window.draw(vert_line);
         window.draw(top_line);
         window.draw(bottom_line);
         window.draw(ball);

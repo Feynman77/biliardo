@@ -16,7 +16,7 @@
 #include "line.h"
 
 // create the setup from user
-Setup getParametersFromUser(tgui::Gui& gui) {
+Setup getParametersFromUser(tgui::Gui &gui) {
   Setup s;
   s.r_1 = gui.get<tgui::EditBoxSlider>("r_1")->getValue();
   s.r_2 = gui.get<tgui::EditBoxSlider>("r_2")->getValue();
@@ -55,7 +55,7 @@ Point findInterception(Line l1, Line l2) {
     p.y = ordinate;
     return p;
   } else {
-    Point p{-1, 0};  // x that gets discarded by main
+    Point p{-1, 0}; // x that gets discarded by main
     return p;
   }
 }
@@ -104,9 +104,9 @@ Point calculateFirstHit(Point interception_top_line,
 }
 
 // fill the vector with the positions of the motion
-void fillVector(std::vector<Point>& positions, Point last_interception,
-                Point new_interception, Line path, double& speed,
-                double& scale) {
+void fillVector(std::vector<Point> &positions, Point last_interception,
+                Point new_interception, Line path, double &speed,
+                double &scale) {
   double i{0};
   do {
     double x =
@@ -122,18 +122,18 @@ void fillVector(std::vector<Point>& positions, Point last_interception,
 
 // calculate the final point
 Point getFinalPoint(Point new_interception, Point last_interception,
-                    System system, Setup setup, std::vector<Point>& positions,
-                    double& speed, double& scale) {
+                    System system, Setup setup, std::vector<Point> &positions,
+                    double &speed, double &scale) {
   Line path(system.first_throw.getSlope(), system.first_throw.getQ());
 
-  // ball bounces 
+  // ball bounces
   while (last_interception.x <= new_interception.x) {
     // valid throw final path
     if (new_interception.x >= setup.l) {
       fillVector(positions, last_interception, new_interception, path, speed,
                  scale);
       double result{path.getSlope() * setup.l +
-                    path.getQ()};  // wrong sign for no reason
+                    path.getQ()}; // wrong sign for no reason
       double final_angle{atan(path.getSlope())};
       std::cout << " The final coordinates are x=" << setup.l
                 << " and y=" << -result
@@ -193,7 +193,7 @@ Point getFinalPoint(Point new_interception, Point last_interception,
 }
 
 Point calculateFinalPoint(Point new_interception, Point last_interception,
-                          System system, Setup setup, TH1F& h1, TH1F& h2) {
+                          System system, Setup setup, TH1F &h1, TH1F &h2) {
   Line path(system.first_throw.getSlope(), system.first_throw.getQ());
 
   // ball bounces (maybe)
@@ -253,7 +253,7 @@ Point calculateFinalPoint(Point new_interception, Point last_interception,
   return p;
 }
 
-void getNormalDistribution(Setup& setup, tgui::Gui& gui) {
+void getNormalDistribution(Setup &setup, tgui::Gui &gui) {
   float sigma_y_0 = gui.get<tgui::EditBoxSlider>("sigma y_0")->getValue();
   float sigma_theta_0 =
       gui.get<tgui::EditBoxSlider>("sigma theta_0")->getValue();
