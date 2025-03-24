@@ -55,9 +55,10 @@ Point getFinalPoint(Point new_interception, Point last_interception,
 Point calculateFinalPoint(Point new_interception, Point last_interception,
                           System system, Setup setup, TH1F& h1, TH1F& h2);
 
-void getNormalDistribution(Setup& setup);
+void getNormalDistribution(Setup& setup, tgui::Gui& gui);
 
 void fillVector(std::vector<Point>& positions, Point last_interception,
-                Point new_interception, Line path, double& speed, double& scale);
+                Point new_interception, Line path, double& speed,
+                double& scale);
 
 #endif

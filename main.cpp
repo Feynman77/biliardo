@@ -1,4 +1,6 @@
+#include <SFML/Graphics/Texture.hpp>
 #include <SFML/Window/Event.hpp>
+#include <TGUI/Widgets/Picture.hpp>
 #include <TGUI/Widgets/Slider.hpp>
 #include <cmath>
 #include <iostream>
@@ -20,26 +22,6 @@ int main() {
   sf::CircleShape ball(1);
   window.create(sf::VideoMode(800, 600), "Biliardo");
 
-  /*System system(makeSystemFromSetup(setup));
-
-  Point interception_top_line{
-      findInterception(system.top_line, system.first_throw)};
-  Point interception_bottom_line{
-      findInterception(system.bottom_line, system.first_throw)};
-  Point last_interception{0, 0};
-  Point new_interception{calculateFirstHit(
-      interception_top_line, interception_bottom_line, setup, system)};
-
-  window.create(sf::VideoMode(800, 600), "Biliardo");
-  std::vector<Point> positions{};
-  Point final_point{getFinalPoint(new_interception, last_interception, system,
-                                  setup, positions, speed, scale)};
-
-  /*openWindow(window, ball, scale * setup.l, scale * setup.r_1,
-             scale * setup.r_2, scale * setup.y_0, positions, gui)*/
-
-  // getNormalDistribution(setup);
-
   sf::View view(sf::Vector2f(0, 0), sf::Vector2f(800, 600));
   window.setView(view);
   window.setFramerateLimit(60);
@@ -57,6 +39,7 @@ int main() {
   sf::VertexArray bottom_line(sf::Lines, 2);
 
   int i{0};
+  int j = 0;
 
   std::vector<Point> positions{};
 
@@ -74,10 +57,21 @@ int main() {
   bottom_line[0].color = sf::Color::White;
   bottom_line[1].position = sf::Vector2f(0, 0);
   bottom_line[1].color = sf::Color::White;
+  Setup setup;
+  //auto picture = gui.get<tgui::Picture>("histograms");
+  bool gaus_pressed = false;
+  sf::Texture texture;
+  sf::Sprite sprite;
+  sprite.setPosition(-400, 0);
+sprite.setScale(0.7, 0.7);
+
+  gui.get<tgui::Button>("gauss")->onClick([&]() { gaus_pressed = true; });
+
 
 
   while (window.isOpen()) {
     sf::Event event;
+
     while (window.pollEvent(event)) {
       gui.handleEvent(event);
       if (event.type == sf::Event::Closed) {
@@ -85,13 +79,14 @@ int main() {
       }
     }
 
-    
     if ((button_is_pressed = true)) {
       // run the program as long as the window is open
       while (window.isOpen()) {
         // check all the window's events that were triggered since the last
         // iteration of the loop
-      
+        float r_1 = gui.get<tgui::EditBoxSlider>("r_1")->getValue();
+        gui.get<tgui::EditBoxSlider>("y_0")->setMaximum(r_1);
+        gui.get<tgui::EditBoxSlider>("y_0")->setMinimum(-r_1);
 
         while (window.pollEvent(event)) {
           gui.handleEvent(event);
@@ -103,7 +98,7 @@ int main() {
 
         gui.get<tgui::Button>("run")->onClick([&]() {
           positions.clear();
-          Setup setup(getParametersFromUser(gui));
+          setup = (getParametersFromUser(gui));
           makeDrawableSystem(ball, top_line, bottom_line, setup);
           System system(makeSystemFromSetup(setup));
 
@@ -120,15 +115,54 @@ int main() {
                                           scale)};
         });
 
-        if (i < positions.size()) {
+        if (i < positions.size() && positions.size() != 0) {
           ball.setPosition(positions[i].x, positions[i].y);
           i++;
         }
+
+        if (i >= positions.size() && positions.size() != 0) {
+          positions.clear();
+          i = 0;
+        }
+
+        if (gaus_pressed == true) {
+          setup = (getParametersFromUser(gui));
+          getNormalDistribution(setup, gui);
+
+          /*gui.get<tgui::Picture>("histograms")
+          ->getRenderer()
+          ->setTexture("histos.png");*/
+          gaus_pressed = false; 
+          texture.loadFromFile("histos.png");
+          sprite.setTexture(texture);
+         /* gui.remove(picture);
+
+          picture = tgui::Picture::create("histos.png");
+          picture->setSize(400, 400);
+          picture->setPosition(0, 250);
+          gui.add(picture, "histograms");
+          gaus_pressed = false; */
+        }; 
+
+        /*gui.get<tgui::Button>("gauss")->onClick([&]() {
+          if (j == 0) {
+            setup = (getParametersFromUser(gui));
+            getNormalDistribution(setup, gui);
+            gui.get<tgui::Picture>("histograms")
+                ->getRenderer()
+                ->setTexture("histos.png");
+          }
+          j++;
+          if (j != 0) {
+            gui.get<tgui::Button>("gauss")->onClick([&]() { j = 0; });
+          }
+        });*/
 
         window.clear();
         window.draw(top_line);
         window.draw(bottom_line);
         window.draw(ball);
+        window.draw(sprite);
         gui.draw();
         window.display();
       }
@@ -155,7 +189,12 @@ separare parte gaussiane con resto,
 possibilità di salvare i grafici da qualche altra parte,
 miglorare nomi.
 
-creazione funzione per disegnare le linee dentro il while*/
+creazione funzione per disegnare le linee dentro il while
+
+problema: in getfinalpoint calcola, per motivi a noi ignoti, angolo e posizione
+finale girati di segno
+
+*/
 
 // run the program as long as the window is open
 /*while (window.isOpen()) {

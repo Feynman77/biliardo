@@ -126,18 +126,18 @@ Point getFinalPoint(Point new_interception, Point last_interception,
                     double& speed, double& scale) {
   Line path(system.first_throw.getSlope(), system.first_throw.getQ());
 
-  // ball bounces (maybe)
-
+  // ball bounces 
   while (last_interception.x <= new_interception.x) {
     // valid throw final path
     if (new_interception.x >= setup.l) {
       fillVector(positions, last_interception, new_interception, path, speed,
                  scale);
-      double result{path.getSlope() * setup.l + path.getQ()};
+      double result{path.getSlope() * setup.l +
+                    path.getQ()};  // wrong sign for no reason
       double final_angle{atan(path.getSlope())};
       std::cout << " The final coordinates are x=" << setup.l
-                << " and y=" << result
-                << ". The angle of incidence is: " << final_angle << '\n';
+                << " and y=" << -result
+                << ". The angle of incidence is: " << -final_angle << '\n';
       break;
     };
 
@@ -147,12 +147,12 @@ Point getFinalPoint(Point new_interception, Point last_interception,
       // we find the path after hitting the top line
       fillVector(positions, last_interception, new_interception, path, speed,
                  scale);
-      path.setSlope(
-          (path.getSlope() * system.top_line.getSlope() *
-               system.top_line.getSlope() -
-           path.getSlope() - 2 * std::abs(system.top_line.getSlope())) /
-          (1 - system.top_line.getSlope() * system.top_line.getSlope() -
-           2 * path.getSlope() * std::abs(system.top_line.getSlope())));
+      path.setSlope((path.getSlope() * system.top_line.getSlope() *
+                         system.top_line.getSlope() -
+                     path.getSlope() + 2 * system.top_line.getSlope()) /
+                    (1 -
+                     system.top_line.getSlope() * system.top_line.getSlope() +
+                     2 * path.getSlope() * system.top_line.getSlope()));
       path.setQ(new_interception.y - path.getSlope() * new_interception.x);
       last_interception = new_interception;
 
@@ -166,13 +166,13 @@ Point getFinalPoint(Point new_interception, Point last_interception,
                  scale);
       // we find the path after hitting the bottom line
       path.setSlope(-path.getSlope());
-      path.setSlope(
-          (-1) *
-          (path.getSlope() * system.top_line.getSlope() *
-               system.top_line.getSlope() -
-           path.getSlope() - 2 * std::abs(system.top_line.getSlope())) /
-          (1 - system.top_line.getSlope() * system.top_line.getSlope() -
-           2 * path.getSlope() * std::abs(system.top_line.getSlope())));
+      path.setSlope((-1) *
+                    (path.getSlope() * system.top_line.getSlope() *
+                         system.top_line.getSlope() -
+                     path.getSlope() + 2 * system.top_line.getSlope()) /
+                    (1 -
+                     system.top_line.getSlope() * system.top_line.getSlope() +
+                     2 * path.getSlope() * system.top_line.getSlope()));
       path.setQ(new_interception.y - path.getSlope() * new_interception.x);
 
       last_interception = new_interception;
@@ -181,9 +181,9 @@ Point getFinalPoint(Point new_interception, Point last_interception,
 
     // ball goes back
     if (new_interception.x < last_interception.x) {
-      std::cout
+      /*std::cout
           << "Invalid throw. The ball went behind the starting line. Try again."
-          << '\n';
+          << '\n';*/
       break;
     };
   }
@@ -201,8 +201,8 @@ Point calculateFinalPoint(Point new_interception, Point last_interception,
   while (last_interception.x <= new_interception.x) {
     // valid throw final path
     if (new_interception.x >= setup.l) {
-      double result{path.getSlope() * setup.l + path.getQ()};
-      double final_angle{atan(path.getSlope())};
+      double result{-(path.getSlope() * setup.l + path.getQ())};
+      double final_angle{-atan(path.getSlope())};
       h1.Fill(result);
       h2.Fill(final_angle);
       break;
@@ -213,12 +213,12 @@ Point calculateFinalPoint(Point new_interception, Point last_interception,
         new_interception.y > 0) {
       // we find the path after hitting the top line
 
-      path.setSlope(
-          (path.getSlope() * system.top_line.getSlope() *
-               system.top_line.getSlope() -
-           path.getSlope() - 2 * std::abs(system.top_line.getSlope())) /
-          (1 - system.top_line.getSlope() * system.top_line.getSlope() -
-           2 * path.getSlope() * std::abs(system.top_line.getSlope())));
+      path.setSlope((path.getSlope() * system.top_line.getSlope() *
+                         system.top_line.getSlope() -
+                     path.getSlope() + 2 * system.top_line.getSlope()) /
+                    (1 -
+                     system.top_line.getSlope() * system.top_line.getSlope() +
+                     2 * path.getSlope() * system.top_line.getSlope()));
       path.setQ(new_interception.y - path.getSlope() * new_interception.x);
       last_interception = new_interception;
 
@@ -230,13 +230,13 @@ Point calculateFinalPoint(Point new_interception, Point last_interception,
         new_interception.y < 0) {
       // we find the path after hitting the bottom line
       path.setSlope(-path.getSlope());
-      path.setSlope(
-          (-1) *
-          (path.getSlope() * system.top_line.getSlope() *
-               system.top_line.getSlope() -
-           path.getSlope() - 2 * std::abs(system.top_line.getSlope())) /
-          (1 - system.top_line.getSlope() * system.top_line.getSlope() -
-           2 * path.getSlope() * std::abs(system.top_line.getSlope())));
+      path.setSlope((-1) *
+                    (path.getSlope() * system.top_line.getSlope() *
+                         system.top_line.getSlope() -
+                     path.getSlope() + 2 * system.top_line.getSlope()) /
+                    (1 -
+                     system.top_line.getSlope() * system.top_line.getSlope() +
+                     2 * path.getSlope() * system.top_line.getSlope()));
       path.setQ(new_interception.y - path.getSlope() * new_interception.x);
 
       last_interception = new_interception;
@@ -253,20 +253,18 @@ Point calculateFinalPoint(Point new_interception, Point last_interception,
   return p;
 }
 
-void getNormalDistribution(Setup& setup) {
-  double sigma_y;
-  double sigma_theta;
-  int n;
+void getNormalDistribution(Setup& setup, tgui::Gui& gui) {
+  float sigma_y_0 = gui.get<tgui::EditBoxSlider>("sigma y_0")->getValue();
+  float sigma_theta_0 =
+      gui.get<tgui::EditBoxSlider>("sigma theta_0")->getValue();
+  float n = gui.get<tgui::EditBoxSlider>("n")->getValue();
+
   TH1F h1("Isto1", "Final points", 20, -setup.r_2, setup.r_2);
   TH1F h2("Isto2", "Final angles", 100, -M_PI, M_PI);
 
-  std::cout << "Insert sigma y_0, sigma theta_0 and number of iterations."
-            << '\n';
-  std::cin >> sigma_y >> sigma_theta >> n;
-
   for (int i{0}; i < n; i++) {
-    double theta = gRandom->Gaus(setup.theta_0, sigma_theta);
-    double y = gRandom->Gaus(setup.y_0, sigma_y);
+    double theta = gRandom->Gaus(setup.theta_0, sigma_theta_0);
+    double y = gRandom->Gaus(setup.y_0, sigma_y_0);
     Setup setup_gaus{y, theta, setup.l, setup.r_1, setup.r_2};
     System system(makeSystemFromSetup(setup_gaus));
 

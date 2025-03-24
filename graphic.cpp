@@ -14,6 +14,7 @@
 #include <TGUI/Widgets/EditBox.hpp>
 #include <TGUI/Widgets/EditBoxSlider.hpp>
 #include <TGUI/Widgets/Panel.hpp>
+#include <TGUI/Widgets/Picture.hpp>
 #include <vector>
 
 #include "ForwardDeclaration.h"
@@ -91,6 +92,7 @@ auto createBoxSlider(double maximum, double minimum, double x, double y,
   BoxSlider->setSize(width, height);
   BoxSlider->setValue((maximum - minimum) / 2);
   BoxSlider->setStep(step);
+  BoxSlider->setDecimalPlaces(2);
   return BoxSlider;
 }
 
@@ -105,6 +107,7 @@ auto createButton(double x, double y, const char* name, double width,
 
 // fill the TGui gui
 void fillGui(tgui::Gui& gui) {
+  // edit for motion
   gui.add(createBoxSlider(90, -90, 0, 20, 0.01, 200, 20), "theta_0");
   gui.add(createBoxSlider(10, 0, 0, 45, 0.01, 200, 20), "r_1");
 
@@ -114,6 +117,18 @@ void fillGui(tgui::Gui& gui) {
   gui.add(createBoxSlider(10, 0, 250, 45, 0.01, 200, 20), "r_2");
   gui.add(createBoxSlider(10, 0, 0, 70, 0.01, 200, 20), "l");
   gui.add(createButton(250, 70, "run", 200, 20), "run");
+
+  // edit for gaussian distribution
+  gui.add(createBoxSlider(10, 0, 0, 95, 0.01, 200, 20), "sigma y_0");
+  gui.add(createBoxSlider(10, 0, 0, 120, 0.01, 200, 20), "sigma theta_0");
+  gui.add(createBoxSlider(10000, 0, 0, 145, 0.01, 200, 20), "n");
+  gui.add(createButton(0, 170, "gauss", 200, 20), "gauss");
+  
+
+  //auto picture = tgui::Picture::create("Diapositiva1.png");
+  //picture->setSize(400, 400);
+  //picture->setPosition(0,250);
+ // gui.add(picture, "histograms");
 }
 
 // NEW OPENWINDOW
@@ -184,13 +199,13 @@ void openWindow(sf::RenderWindow& window, sf::CircleShape& ball, double l,
 
 void makeDrawableSystem(sf::CircleShape& ball, sf::VertexArray& top_line,
                         sf::VertexArray& bottom_line, Setup& s) {
+  // creation of top line
   top_line[0].position = sf::Vector2f(0, 25 * s.r_1);
   top_line[0].color = sf::Color::White;
   top_line[1].position = sf::Vector2f(25 * s.l, 25 * s.r_2);
   top_line[1].color = sf::Color::White;
 
   // creation of the bottom line
-
   bottom_line[0].position = sf::Vector2f(0, -25 * s.r_1);
   bottom_line[0].color = sf::Color::White;
   bottom_line[1].position = sf::Vector2f(25 * s.l, -25 * s.r_2);
