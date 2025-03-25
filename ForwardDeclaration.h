@@ -50,7 +50,7 @@ Point calculateFirstHit(Point interception_top_line,
 
 Point getFinalPoint(Point& new_interception, Point& last_interception,
                     System& system, Setup& setup, std::vector<Point>& positions,
-                    double& speed, double& scale);
+                    double& speed, double& scale, tgui::Gui& gui);
 
 Point calculateFinalPoint(Point new_interception, Point last_interception,
                           System system, Setup setup, TH1F& h1, TH1F& h2);

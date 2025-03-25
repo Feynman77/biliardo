@@ -77,7 +77,7 @@ int main() {
   // creation vertical line
   vert_line[0].position = sf::Vector2f(-50, -1000);
   vert_line[0].color = sf::Color::White;
-  vert_line[1].position = sf::Vector2f(-50, -228);
+  vert_line[1].position = sf::Vector2f(-50, 1000);
   vert_line[1].color = sf::Color::White;
 
   Setup setup;
@@ -134,9 +134,9 @@ int main() {
           interception_top_line, interception_bottom_line, setup, system)};
 
       Point final_point{getFinalPoint(new_interception, last_interception,
-                                      system, setup, positions, speed, scale)};
+                                      system, setup, positions, speed, scale, gui)};
 
-      gui.get<tgui::EditBox>("test")->setText(
+      gui.get<tgui::EditBox>("Final point")->setText(
           std::to_string(final_point.x) + "; " + std::to_string(final_point.y));
       i = 0;
       run_pressed = false;

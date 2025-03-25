@@ -20,8 +20,6 @@
 
 #include "ForwardDeclaration.h"
 
-
-
 // create a Tgui boxslider
 auto createBoxSlider(double maximum, double minimum, double x, double y,
                      double step, double width, double height) {
@@ -40,6 +38,7 @@ auto createButton(double x, double y, const char *name, double width,
   auto Button = tgui::Button::create(name);
   Button->setPosition(x, y);
   Button->setSize(width, height);
+  Button->setTextSize(15);
   Button->getRenderer()->setBackgroundColor(tgui::Color::Green);
   return Button;
 }
@@ -51,66 +50,75 @@ auto createLabel(const std::string &text, float x, float y) {
   label->getRenderer()->setTextColor(
       tgui::Color::White);  // Set text color to white
   label->setPosition(x, y); // Set the position
+  label->setTextSize(15);
   return label;
 }
 
 auto createEditBox(const std::string &text, float x, float y) {
 
-auto editbox = tgui::EditBox::create();
-editbox->setPosition(x,y);
-editbox->setSize(200, 50);
-editbox->setTextSize(18);
-editbox->setText(text);
-editbox->setReadOnly(true);
-return editbox;
+  auto editbox = tgui::EditBox::create();
+  editbox->setPosition(x, y);
+  editbox->setSize(200, 50);
+  editbox->setTextSize(18);
+  editbox->setText(text);
+  editbox->setReadOnly(true);
+  return editbox;
 }
 
 // fill the TGui gui
 void fillGui(tgui::Gui &gui) {
   // edit for motion
-  gui.add(createBoxSlider(90, -90, 30, 50, 0.01, 200, 20), "theta_0");
-  gui.add(createBoxSlider(10, 0, 30, 105, 0.01, 200, 20), "r_1");
+  gui.add(createBoxSlider(90, -90, 30, 550, 0.01, 200, 50), "theta_0");
+  gui.add(createBoxSlider(10, 0, 30, 650, 0.01, 200, 50), "r_1");
 
   float r_1 = gui.get<tgui::EditBoxSlider>("r_1")->getValue();
 
-  gui.add(createBoxSlider(r_1, -r_1, 280, 50, 0.01, 200, 20), "y_0");
-  gui.add(createBoxSlider(10, 0, 280, 105, 0.01, 200, 20), "r_2");
-  gui.add(createBoxSlider(100, 0, 30, 160, 0.01, 200, 20), "l");
-  gui.add(createButton(280, 160, "run", 200, 20), "run");
+  gui.add(createBoxSlider(r_1, -r_1, 280, 550, 0.01, 200, 50), "y_0");
+  gui.add(createBoxSlider(10, 0, 280, 650, 0.01, 200, 50), "r_2");
+  gui.add(createBoxSlider(100, 0, 30, 750, 0.01, 200, 50), "l");
+  gui.add(createButton(280, 750, "run", 200, 50), "run");
 
   // edit for gaussian distribution
-  gui.add(createBoxSlider(10, 0, 30, 215, 0.01, 200, 20), "sigma y_0");
-  gui.add(createBoxSlider(10, 0, 280, 215, 0.01, 200, 20), "sigma theta_0");
-  gui.add(createBoxSlider(10000, 0, 30, 270, 0.01, 200, 20), "n");
-  gui.add(createButton(280, 270, "gauss", 200, 20), "gauss");
+  gui.add(createBoxSlider(10, 0, 30, 30, 0.01, 200, 50), "sigma y_0");
+  gui.add(createBoxSlider(10, 0, 280, 30, 0.01, 200, 50), "sigma theta_0");
+  gui.add(createBoxSlider(10000, 0, 30, 105, 0.01, 200, 50), "n");
+  gui.add(createButton(280, 105, "gauss", 200, 50), "gauss");
 
-  // Add label for "theta_0" slider
-  gui.add(createLabel("theta_0", 30, 50 - 25), "label_theta_0");
+  // Add labels for sliders
+  gui.add(createLabel("theta_0", 30, 550 - 25), "label_theta_0");
+  gui.add(createLabel("r_1", 30, 650 - 25), "label_r_1");
+  gui.add(createLabel("y_0", 280, 550 - 25), "label_y_0");
+  gui.add(createLabel("r_2", 280, 650 - 25), "label_r_2");
+  gui.add(createLabel("l", 30, 750 - 25), "label_l");
+  gui.add(createLabel("sigma y_0", 30, 30 - 25), "label_sigma_y_0");
+  gui.add(createLabel("sigma theta_0", 280, 30 - 25), "label_sigma_theta_0");
+  gui.add(createLabel("n", 30, 105 - 25), "label_n");
 
-  // Add label for "r_1" slider
-  gui.add(createLabel("r_1", 30, 105 - 25), "label_r_1");
+  // results of the throw
+  gui.add(createEditBox("", 30.f, 850.f), "Final point");
+  gui.add(createEditBox("", 280.f, 850.f), "Final angle");
+//results of the normal distribution
+  gui.add(createEditBox("", 30.f, 180.f), "Position mean");
+  gui.add(createEditBox("", 280.f, 180.f), "Angle mean");
+  gui.add(createEditBox("", 30.f, 255.f), "Position stddev");
+  gui.add(createEditBox("", 280.f, 255.f), "Angle stddev");
+  gui.add(createEditBox("", 30.f, 330.f), "Position skewedness");
+  gui.add(createEditBox("", 280.f, 330.f), "Angle skewedness");
+  gui.add(createEditBox("", 30.f, 405.f), "Position kurtosis");
+  gui.add(createEditBox("", 280.f, 405.f), "Angle kurtosis");
 
-  // Add label for "y_0" slider
-  gui.add(createLabel("y_0", 280, 50 - 25), "label_y_0");
+  //editbox labels
 
-  // Add label for "r_2" slider
-  gui.add(createLabel("r_2", 280, 105 - 25), "label_r_2");
-
-  // Add label for "l" slider
-  gui.add(createLabel("l", 30, 160 - 25), "label_l");
-
-  // Add label for "sigma y_0" slider
-  gui.add(createLabel("sigma y_0", 30, 215 - 25), "label_sigma_y_0");
-
-  // Add label for "sigma theta_0" slider
-  gui.add(createLabel("sigma theta_0", 280, 215 - 25), "label_sigma_theta_0");
-
-  // Add label for "n" slider
-  gui.add(createLabel("n", 30, 270 - 25), "label_n");
-
-  gui.add(createEditBox("test", 280.f, 290.f), "test");
-
-  // creation of the vertical and horizontal line for layout
+  gui.add(createLabel("Final position mean", 30, 180 - 25), "label_p_mean");
+  gui.add(createLabel("Final angle mean", 280, 180 - 25), "label_a_mean");
+  gui.add(createLabel("Final position std dev", 30, 255 - 25), "label_p_stddev");
+  gui.add(createLabel("Final angle stddev", 280, 255 - 25), "label_a_stddev");
+  gui.add(createLabel("Position Skewedness", 30, 330 - 25), "label_p_skewedness");
+  gui.add(createLabel("angle Skewedness", 280, 330 - 25), "label_a_skewedness");
+  gui.add(createLabel("Position Kurtosis", 30, 405 - 25), "label_p_kurtosis");
+  gui.add(createLabel("Angle Kurtosis", 280, 405 - 25), "label_a_kurtosis");
+  gui.add(createLabel("Final position", 30, 850 - 25), "label_f_position");
+  gui.add(createLabel("Angle of incidence", 280, 850 - 25), "label_f_angle");
 }
 
 void makeDrawableSystem(sf::CircleShape &ball, sf::VertexArray &top_line,

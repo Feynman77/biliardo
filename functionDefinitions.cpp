@@ -51,7 +51,7 @@ Point findInterception(Line l1, Line l2) {
     p.y = ordinate;
     return p;
   } else {
-    Point p{-1, 0};  // x that gets discarded by main
+    Point p{-1, 0}; // x that gets discarded by main
     return p;
   }
 }
@@ -119,7 +119,7 @@ void fillVector(std::vector<Point> &positions, Point last_interception,
 // calculate the final point
 Point getFinalPoint(Point &new_interception, Point &last_interception,
                     System &system, Setup &setup, std::vector<Point> &positions,
-                    double &speed, double &scale) {
+                    double &speed, double &scale, tgui::Gui &gui) {
   Line path(system.first_throw.getSlope(), system.first_throw.getQ());
   Point p;
 
@@ -130,11 +130,13 @@ Point getFinalPoint(Point &new_interception, Point &last_interception,
       fillVector(positions, last_interception, new_interception, path, speed,
                  scale);
       double result{path.getSlope() * setup.l +
-                    path.getQ()};  // wrong sign for no reason
+                    path.getQ()}; // wrong sign for no reason
       double final_angle{atan(path.getSlope())};
       std::cout << " The final coordinates are x=" << setup.l
                 << " and y=" << -result
                 << ". The angle of incidence is: " << -final_angle << '\n';
+      gui.get<tgui::EditBox>("Final angle")
+          ->setText(std::to_string(-final_angle));
       p.x = setup.l;
       p.y = -result;
       break;
@@ -283,19 +285,19 @@ void getNormalDistribution(Setup &setup, tgui::Gui &gui) {
   h2.Draw();
   canvas.Print("histos.png");
 
-  double_t mean{h1.GetMean()};
-  std::cout << "Mean of final y= " << mean << '\n';
-  std::cout << "STDev of final y = " << h1.GetRMS() << '\n';
-  std::cout << "Skewness of final y: " << h1.GetSkewness() << '\n';
-  std::cout << "Kurtosis of final y: " << h1.GetKurtosis() << '\n';
-  std::cout << "Entries in the histogram of final y: " << h1.GetEntries()
-            << std::endl;
+  gui.get<tgui::EditBox>("Position mean")
+      ->setText(std::to_string(h1.GetMean()));
+  gui.get<tgui::EditBox>("Position stddev")
+      ->setText(std::to_string(h1.GetRMS()));
+  gui.get<tgui::EditBox>("Position skewedness")
+      ->setText(std::to_string(h1.GetSkewness()));
+  gui.get<tgui::EditBox>("Position kurtosis")
+      ->setText(std::to_string(h1.GetKurtosis()));
 
-  double_t mean_angle{h2.GetMean()};
-  std::cout << "Mean of final angle= " << mean_angle << '\n';
-  std::cout << "STDeav of final angle= " << h2.GetRMS() << '\n';
-  std::cout << "Skewness of final angle: " << h2.GetSkewness() << '\n';
-  std::cout << "Kurtosis of final angle: " << h2.GetKurtosis() << '\n';
-  std::cout << "Entries in the histogram of final angle: " << h2.GetEntries()
-            << std::endl;
+  gui.get<tgui::EditBox>("Angle mean")->setText(std::to_string(h2.GetMean()));
+  gui.get<tgui::EditBox>("Angle stddev")->setText(std::to_string(h2.GetRMS()));
+  gui.get<tgui::EditBox>("Angle skewedness")
+      ->setText(std::to_string(h2.GetSkewness()));
+  gui.get<tgui::EditBox>("Angle kurtosis")
+      ->setText(std::to_string(h2.GetKurtosis()));
 }
