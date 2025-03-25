@@ -16,10 +16,6 @@
 #include "ForwardDeclaration.h"
 #include "line.h"
 
-void openWindow(sf::RenderWindow &window, sf::CircleShape &ball, double l,
-                double r_1, double r_2, double y_0,
-                std::vector<Point> positions, tgui::Gui &gui);
-
 void animateBottomHit(sf::RenderWindow &window, sf::CircleShape &ball, double l,
                       double r_1, double r_2, double y_0, double speed,
                       Line path, Point new_interception,
@@ -32,6 +28,8 @@ auto createButton(double x, double y, const char *name, double width,
                   double height);
 
 auto createLabel(const std::string &text, float x, float y);
+
+auto createEditBox(std::string &text, float x, float y);
 
 void makeDrawableSystem(sf::CircleShape &ball, sf::VertexArray &top_line,
                         sf::VertexArray &bottom_line, Setup &s);

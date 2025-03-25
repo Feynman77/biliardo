@@ -23,10 +23,6 @@ Setup getParametersFromUser(tgui::Gui &gui) {
   s.l = gui.get<tgui::EditBoxSlider>("l")->getValue();
   float y_0 = gui.get<tgui::EditBoxSlider>("y_0")->getValue();
   float theta_0 = gui.get<tgui::EditBoxSlider>("theta_0")->getValue();
-  /*std::cout << "Insert y_0 and theta_0" << '\n';
-  std::cin >> y_0 >> theta_0;
-  std::cout << "Insert l, r_1 and r_2" << '\n';
-  std::cin >> s.l >> s.r_1 >> s.r_2;*/
   s.y_0 = -y_0;
   s.theta_0 = -theta_0;
   return s;
@@ -55,7 +51,7 @@ Point findInterception(Line l1, Line l2) {
     p.y = ordinate;
     return p;
   } else {
-    Point p{-1, 0}; // x that gets discarded by main
+    Point p{-1, 0};  // x that gets discarded by main
     return p;
   }
 }
@@ -121,10 +117,11 @@ void fillVector(std::vector<Point> &positions, Point last_interception,
 }
 
 // calculate the final point
-Point getFinalPoint(Point new_interception, Point last_interception,
-                    System system, Setup setup, std::vector<Point> &positions,
+Point getFinalPoint(Point &new_interception, Point &last_interception,
+                    System &system, Setup &setup, std::vector<Point> &positions,
                     double &speed, double &scale) {
   Line path(system.first_throw.getSlope(), system.first_throw.getQ());
+  Point p;
 
   // ball bounces
   while (last_interception.x <= new_interception.x) {
@@ -133,11 +130,13 @@ Point getFinalPoint(Point new_interception, Point last_interception,
       fillVector(positions, last_interception, new_interception, path, speed,
                  scale);
       double result{path.getSlope() * setup.l +
-                    path.getQ()}; // wrong sign for no reason
+                    path.getQ()};  // wrong sign for no reason
       double final_angle{atan(path.getSlope())};
       std::cout << " The final coordinates are x=" << setup.l
                 << " and y=" << -result
                 << ". The angle of incidence is: " << -final_angle << '\n';
+      p.x = setup.l;
+      p.y = -result;
       break;
     };
 
@@ -181,14 +180,10 @@ Point getFinalPoint(Point new_interception, Point last_interception,
 
     // ball goes back
     if (new_interception.x < last_interception.x) {
-      /*std::cout
-          << "Invalid throw. The ball went behind the starting line. Try again."
-          << '\n';*/
       break;
     };
   }
 
-  Point p{};
   return p;
 }
 

@@ -20,70 +20,7 @@
 
 #include "ForwardDeclaration.h"
 
-// creation of the window
-/*void openWindow(sf::RenderWindow& window, sf::CircleShape& ball, double l,
-                double r_1, double r_2, double y_0,
-                std::vector<Point> positions, tgui::Gui& gui) {
-  sf::View view(sf::Vector2f(0, 0), sf::Vector2f(800, 600));
-  window.setView(view);
-  window.setFramerateLimit(60);
 
-  // Calcola la posizione per centrarla
-  sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
-  int posX = (desktop.width - window.getSize().x) / 2;
-  int posY = (desktop.height - window.getSize().y) / 2;
-
-  // Imposta la posizione della finestra
-  window.setPosition(sf::Vector2i(posX, posY));
-  sf::Clock clock;
-
-  // cration of the top line
-  sf::VertexArray top_line(sf::Lines, 2);
-  top_line[0].position = sf::Vector2f(0, r_1);
-  top_line[0].color = sf::Color::White;
-  top_line[1].position = sf::Vector2f(l, r_2);
-  top_line[1].color = sf::Color::White;
-
-  // creation of the bottom line
-  sf::VertexArray bottom_line(sf::Lines, 2);
-  bottom_line[0].position = sf::Vector2f(0, -r_1);
-  bottom_line[0].color = sf::Color::White;
-  bottom_line[1].position = sf::Vector2f(l, -r_2);
-  bottom_line[1].color = sf::Color::White;
-
-  // creation of the ball
-  ball.setFillColor(sf::Color::White);
-  ball.setPosition(0, y_0);
-  ball.setOrigin(ball.getRadius(), ball.getRadius());
-
-  int i{0};
-
-  // run the program as long as the window is open
-  while (window.isOpen()) {
-    // check all the window's events that were triggered since the last
-    // iteration of the loop
-    sf::Event event;
-
-    while (window.pollEvent(event)) {
-      gui.handleEvent(event);
-      // "close requested" event: we close the window
-      if (event.type == sf::Event::Closed) {
-        window.close();
-      }
-    }
-    if (i < positions.size()) {
-      ball.setPosition(positions[i].x, positions[i].y);
-      i++;
-    }
-
-    window.clear();
-    window.draw(top_line);
-    window.draw(bottom_line);
-    window.draw(ball);
-    gui.draw();
-    window.display();
-  }
-}*/
 
 // create a Tgui boxslider
 auto createBoxSlider(double maximum, double minimum, double x, double y,
@@ -115,6 +52,17 @@ auto createLabel(const std::string &text, float x, float y) {
       tgui::Color::White);  // Set text color to white
   label->setPosition(x, y); // Set the position
   return label;
+}
+
+auto createEditBox(const std::string &text, float x, float y) {
+
+auto editbox = tgui::EditBox::create();
+editbox->setPosition(x,y);
+editbox->setSize(200, 50);
+editbox->setTextSize(18);
+editbox->setText(text);
+editbox->setReadOnly(true);
+return editbox;
 }
 
 // fill the TGui gui
@@ -160,77 +108,9 @@ void fillGui(tgui::Gui &gui) {
   // Add label for "n" slider
   gui.add(createLabel("n", 30, 270 - 25), "label_n");
 
+  gui.add(createEditBox("test", 280.f, 290.f), "test");
+
   // creation of the vertical and horizontal line for layout
-  //  auto picture = tgui::Picture::create("Diapositiva1.png");
-  //  picture->setSize(400, 400);
-  //  picture->setPosition(0,250);
-  //  gui.add(picture, "histograms");
-}
-
-// NEW OPENWINDOW
-void openWindow(sf::RenderWindow &window, sf::CircleShape &ball, double l,
-                double r_1, double r_2, double y_0,
-                std::vector<Point> positions, tgui::Gui &gui) {
-  sf::View view(sf::Vector2f(0, 0), sf::Vector2f(1400, 900));
-  window.setView(view);
-  window.setFramerateLimit(60);
-
-  // Calcola la posizione per centrarla
-  sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
-  int posX = (desktop.width - window.getSize().x) / 2;
-  int posY = (desktop.height - window.getSize().y) / 2;
-
-  // Imposta la posizione della finestra
-  window.setPosition(sf::Vector2i(posX, posY));
-  sf::Clock clock;
-
-  // cration of the top line
-  sf::VertexArray top_line(sf::Lines, 2);
-  top_line[0].position = sf::Vector2f(0, r_1);
-  top_line[0].color = sf::Color::White;
-  top_line[1].position = sf::Vector2f(l, r_2);
-  top_line[1].color = sf::Color::White;
-
-  // creation of the bottom line
-  sf::VertexArray bottom_line(sf::Lines, 2);
-  bottom_line[0].position = sf::Vector2f(0, -r_1);
-  bottom_line[0].color = sf::Color::White;
-  bottom_line[1].position = sf::Vector2f(l, -r_2);
-  bottom_line[1].color = sf::Color::White;
-
-  // creation of the ball
-  ball.setFillColor(sf::Color::White);
-  ball.setPosition(0, y_0);
-  ball.setOrigin(ball.getRadius(), ball.getRadius());
-
-  int i{0};
-
-  // run the program as long as the window is open
-  while (window.isOpen()) {
-    // check all the window's events that were triggered since the last
-    // iteration of the loop
-    sf::Event event;
-
-    while (window.pollEvent(event)) {
-      gui.handleEvent(event);
-      // "close requested" event: we close the window
-      if (event.type == sf::Event::Closed) {
-        window.close();
-      }
-    }
-
-    if (i < positions.size()) {
-      ball.setPosition(positions[i].x, positions[i].y);
-      i++;
-    }
-
-    window.clear();
-    window.draw(top_line);
-    window.draw(bottom_line);
-    window.draw(ball);
-    gui.draw();
-    window.display();
-  }
 }
 
 void makeDrawableSystem(sf::CircleShape &ball, sf::VertexArray &top_line,

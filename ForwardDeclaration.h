@@ -48,8 +48,8 @@ Point calculateFirstHit(Point interception_top_line,
                         Point interception_bottom_line, Setup setup,
                         System system);
 
-Point getFinalPoint(Point new_interception, Point last_interception,
-                    System system, Setup setup, std::vector<Point>& positions,
+Point getFinalPoint(Point& new_interception, Point& last_interception,
+                    System& system, Setup& setup, std::vector<Point>& positions,
                     double& speed, double& scale);
 
 Point calculateFinalPoint(Point new_interception, Point last_interception,
