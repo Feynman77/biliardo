@@ -22,7 +22,7 @@ int main() {
   sf::CircleShape ball(1);
   ball.setFillColor(sf::Color::Black);
   ball.setOutlineColor(sf::Color::Black);
-  window.create(sf::VideoMode(1400, 950), "Biliardo");
+  window.create(sf::VideoMode(1400, 950), "Biliardo", sf::Style::Titlebar | sf::Style::Close);
 
   sf::View view(sf::Vector2f(100, -225), sf::Vector2f(1400, 950));
   window.setView(view);
