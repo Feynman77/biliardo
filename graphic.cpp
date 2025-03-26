@@ -69,18 +69,18 @@ auto createEditBox(const std::string &text, float x, float y) {
 void fillGui(tgui::Gui &gui) {
   // edit for motion
   gui.add(createBoxSlider(90, -90, 30, 550, 0.01, 200, 50), "theta_0");
-  gui.add(createBoxSlider(10, 0, 30, 650, 0.01, 200, 50), "r_1");
+  gui.add(createBoxSlider(100, 0, 30, 650, 0.01, 200, 50), "r_1");
 
   float r_1 = gui.get<tgui::EditBoxSlider>("r_1")->getValue();
 
   gui.add(createBoxSlider(r_1, -r_1, 280, 550, 0.01, 200, 50), "y_0");
-  gui.add(createBoxSlider(10, 0, 280, 650, 0.01, 200, 50), "r_2");
-  gui.add(createBoxSlider(100, 0, 30, 750, 0.01, 200, 50), "l");
+  gui.add(createBoxSlider(100, 0, 280, 650, 0.01, 200, 50), "r_2");
+  gui.add(createBoxSlider(1000, 0, 30, 750, 0.01, 200, 50), "l");
   gui.add(createButton(280, 750, "Throw", 200, 50), "run");
 
   // edit for gaussian distribution
   gui.add(createBoxSlider(10, 0, 30, 30, 0.01, 200, 50), "sigma y_0");
-  gui.add(createBoxSlider(10, 0, 280, 30, 0.01, 200, 50), "sigma theta_0");
+  gui.add(createBoxSlider(40, 0, 280, 30, 0.01, 200, 50), "sigma theta_0");
   gui.add(createBoxSlider(10000, 0, 30, 105, 0.01, 200, 50), "n");
   gui.add(createButton(280, 105, "Normal distribution", 200, 50), "gauss");
 
@@ -122,21 +122,21 @@ void fillGui(tgui::Gui &gui) {
 }
 
 void makeDrawableSystem(sf::CircleShape &ball, sf::VertexArray &top_line,
-                        sf::VertexArray &bottom_line, Setup &s) {
+                        sf::VertexArray &bottom_line, Setup &s, double& scale) {
   // creation of top line
-  top_line[0].position = sf::Vector2f(0, 25 * s.r_1);
+  top_line[0].position = sf::Vector2f(0, scale * s.r_1);
   top_line[0].color = sf::Color::White;
-  top_line[1].position = sf::Vector2f(25 * s.l, 25 * s.r_2);
+  top_line[1].position = sf::Vector2f(scale * s.l, scale * s.r_2);
   top_line[1].color = sf::Color::White;
 
   // creation of the bottom line
-  bottom_line[0].position = sf::Vector2f(0, -25 * s.r_1);
+  bottom_line[0].position = sf::Vector2f(0, -scale * s.r_1);
   bottom_line[0].color = sf::Color::White;
-  bottom_line[1].position = sf::Vector2f(25 * s.l, -25 * s.r_2);
+  bottom_line[1].position = sf::Vector2f(scale * s.l, -scale * s.r_2);
   bottom_line[1].color = sf::Color::White;
 
   // creation of the ball
   ball.setFillColor(sf::Color::White);
-  ball.setPosition(0, 25 * s.y_0);
+  ball.setPosition(0, scale * s.y_0);
   ball.setOrigin(ball.getRadius(), ball.getRadius());
 }

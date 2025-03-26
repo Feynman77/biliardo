@@ -4,6 +4,7 @@
 #include <TGUI/Widgets/Label.hpp>
 #include <TGUI/Widgets/Picture.hpp>
 #include <TGUI/Widgets/Slider.hpp>
+#include <algorithm>
 #include <cmath>
 #include <iostream>
 #include <string>
@@ -122,7 +123,9 @@ int main() {
 
       positions.clear();
       setup = (getParametersFromUser(gui));
-      makeDrawableSystem(ball, top_line, bottom_line, setup);
+      double scale_reference = std::max({setup.l/30, setup.r_1/8, setup.r_2/8});
+      scale = 25/scale_reference;
+      makeDrawableSystem(ball, top_line, bottom_line, setup, scale);
       System system(makeSystemFromSetup(setup));
 
       Point interception_top_line{

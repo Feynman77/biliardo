@@ -32,7 +32,7 @@ auto createLabel(const std::string &text, float x, float y);
 auto createEditBox(std::string &text, float x, float y);
 
 void makeDrawableSystem(sf::CircleShape &ball, sf::VertexArray &top_line,
-                        sf::VertexArray &bottom_line, Setup &s);
+                        sf::VertexArray &bottom_line, Setup &s, double& scale);
 
 void fillGui(tgui::Gui &gui);
 
