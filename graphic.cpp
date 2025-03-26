@@ -76,13 +76,13 @@ void fillGui(tgui::Gui &gui) {
   gui.add(createBoxSlider(r_1, -r_1, 280, 550, 0.01, 200, 50), "y_0");
   gui.add(createBoxSlider(10, 0, 280, 650, 0.01, 200, 50), "r_2");
   gui.add(createBoxSlider(100, 0, 30, 750, 0.01, 200, 50), "l");
-  gui.add(createButton(280, 750, "run", 200, 50), "run");
+  gui.add(createButton(280, 750, "Throw", 200, 50), "run");
 
   // edit for gaussian distribution
   gui.add(createBoxSlider(10, 0, 30, 30, 0.01, 200, 50), "sigma y_0");
   gui.add(createBoxSlider(10, 0, 280, 30, 0.01, 200, 50), "sigma theta_0");
   gui.add(createBoxSlider(10000, 0, 30, 105, 0.01, 200, 50), "n");
-  gui.add(createButton(280, 105, "gauss", 200, 50), "gauss");
+  gui.add(createButton(280, 105, "Normal distribution", 200, 50), "gauss");
 
   // Add labels for sliders
   gui.add(createLabel("theta_0", 30, 550 - 25), "label_theta_0");
@@ -90,8 +90,8 @@ void fillGui(tgui::Gui &gui) {
   gui.add(createLabel("y_0", 280, 550 - 25), "label_y_0");
   gui.add(createLabel("r_2", 280, 650 - 25), "label_r_2");
   gui.add(createLabel("l", 30, 750 - 25), "label_l");
-  gui.add(createLabel("sigma y_0", 30, 30 - 25), "label_sigma_y_0");
-  gui.add(createLabel("sigma theta_0", 280, 30 - 25), "label_sigma_theta_0");
+  gui.add(createLabel("Sigma y_0", 30, 30 - 25), "label_sigma_y_0");
+  gui.add(createLabel("Sigma theta_0", 280, 30 - 25), "label_sigma_theta_0");
   gui.add(createLabel("n", 30, 105 - 25), "label_n");
 
   // results of the throw
@@ -114,7 +114,7 @@ void fillGui(tgui::Gui &gui) {
   gui.add(createLabel("Final position std dev", 30, 255 - 25), "label_p_stddev");
   gui.add(createLabel("Final angle stddev", 280, 255 - 25), "label_a_stddev");
   gui.add(createLabel("Position Skewedness", 30, 330 - 25), "label_p_skewedness");
-  gui.add(createLabel("angle Skewedness", 280, 330 - 25), "label_a_skewedness");
+  gui.add(createLabel("Angle Skewedness", 280, 330 - 25), "label_a_skewedness");
   gui.add(createLabel("Position Kurtosis", 30, 405 - 25), "label_p_kurtosis");
   gui.add(createLabel("Angle Kurtosis", 280, 405 - 25), "label_a_kurtosis");
   gui.add(createLabel("Final position", 30, 850 - 25), "label_f_position");

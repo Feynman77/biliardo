@@ -51,7 +51,7 @@ Point findInterception(Line l1, Line l2) {
     p.y = ordinate;
     return p;
   } else {
-    Point p{-1, 0}; // x that gets discarded by main
+    Point p{-1, 0};  // x that gets discarded by main
     return p;
   }
 }
@@ -104,16 +104,28 @@ void fillVector(std::vector<Point> &positions, Point last_interception,
                 Point new_interception, Line path, double &speed,
                 double &scale) {
   double i{0};
-  do {
-    double x =
-        last_interception.x + i * (speed / 30) * cos(atan(path.getSlope()));
-    Point position{scale * x,
-                   scale * path.getSlope() * x + scale * path.getQ()};
+  if (last_interception.x < new_interception.x) {
+    do {
+      double x =
+          last_interception.x + i * (speed / 30) * cos(atan(path.getSlope()));
+      Point position{scale * x,
+                     scale * path.getSlope() * x + scale * path.getQ()};
 
-    positions.emplace_back(position);
-    i++;
+      positions.emplace_back(position);
+      i++;
 
-  } while (positions.back().x <= scale * new_interception.x);
+    } while (positions.back().x <= scale * new_interception.x);
+  } else {
+    do {
+      double x =
+          last_interception.x - i * (speed / 30) * cos(atan(path.getSlope()));
+      Point position{scale * x,
+                     scale * path.getSlope() * x + scale * path.getQ()};
+
+      positions.emplace_back(position);
+      i++;
+    } while (positions.back().x >= scale * new_interception.x);
+  }
 }
 
 // calculate the final point
@@ -130,7 +142,7 @@ Point getFinalPoint(Point &new_interception, Point &last_interception,
       fillVector(positions, last_interception, new_interception, path, speed,
                  scale);
       double result{path.getSlope() * setup.l +
-                    path.getQ()}; // wrong sign for no reason
+                    path.getQ()};  // wrong sign for no reason
       double final_angle{atan(path.getSlope())};
       std::cout << " The final coordinates are x=" << setup.l
                 << " and y=" << -result
@@ -155,8 +167,8 @@ Point getFinalPoint(Point &new_interception, Point &last_interception,
                      system.top_line.getSlope() * system.top_line.getSlope() +
                      2 * path.getSlope() * system.top_line.getSlope()));
       path.setQ(new_interception.y - path.getSlope() * new_interception.x);
-      last_interception = new_interception;
 
+      last_interception = new_interception;
       new_interception = findInterception(path, system.bottom_line);
     };
 
@@ -180,9 +192,62 @@ Point getFinalPoint(Point &new_interception, Point &last_interception,
       new_interception = findInterception(path, system.top_line);
     };
 
+    if ((system.top_line.getSlope() > system.bottom_line.getSlope()) &&
+        (new_interception.x < 0)) {
+      new_interception.y = path.getSlope() * setup.l + path.getQ();
+      new_interception.x = setup.l;
+      fillVector(positions, last_interception, new_interception, path, speed,
+                 scale);
+      double result{path.getSlope() * setup.l +
+                    path.getQ()};  // wrong sign for no reason
+      double final_angle{atan(path.getSlope())};
+      gui.get<tgui::EditBox>("Final angle")
+          ->setText(std::to_string(-final_angle));
+      p.x = setup.l;
+      p.y = -result;
+      break;
+    };
+
     // ball goes back
     if (new_interception.x < last_interception.x) {
-      break;
+      while (last_interception.x >= new_interception.x &&
+             last_interception.x > 0) {
+        // ball hits top line first (Francesco)
+        if (new_interception.x < setup.l && new_interception.y > 0) {
+          // we find the path after hitting the top line
+          fillVector(positions, last_interception, new_interception, path,
+                     speed, scale);
+          path.setSlope(
+              (path.getSlope() * system.top_line.getSlope() *
+                   system.top_line.getSlope() -
+               path.getSlope() + 2 * system.top_line.getSlope()) /
+              (1 - system.top_line.getSlope() * system.top_line.getSlope() +
+               2 * path.getSlope() * system.top_line.getSlope()));
+          path.setQ(new_interception.y - path.getSlope() * new_interception.x);
+
+          last_interception = new_interception;
+          new_interception = findInterception(path, system.bottom_line);
+        };
+
+        // ball hits bottom line first (Francesco)
+        if (new_interception.x < setup.l && new_interception.y < 0) {
+          fillVector(positions, last_interception, new_interception, path,
+                     speed, scale);
+          // we find the path after hitting the bottom line
+          path.setSlope(-path.getSlope());
+          path.setSlope(
+              (-1) *
+              (path.getSlope() * system.top_line.getSlope() *
+                   system.top_line.getSlope() -
+               path.getSlope() + 2 * system.top_line.getSlope()) /
+              (1 - system.top_line.getSlope() * system.top_line.getSlope() +
+               2 * path.getSlope() * system.top_line.getSlope()));
+          path.setQ(new_interception.y - path.getSlope() * new_interception.x);
+
+          last_interception = new_interception;
+          new_interception = findInterception(path, system.top_line);
+        };
+      };
     };
   }
 
