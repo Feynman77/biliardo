@@ -1,43 +1,28 @@
 #include "graphic.h"
 
-#include <SFML/Graphics.hpp>
-#include <SFML/Graphics/CircleShape.hpp>
-#include <SFML/Graphics/VertexArray.hpp>
-#include <SFML/Graphics/View.hpp>
-#include <SFML/System/Vector2.hpp>
-#include <SFML/Window.hpp>
-#include <SFML/Window/Event.hpp>
-#include <SFML/Window/VideoMode.hpp>
-#include <SFML/Window/Window.hpp>
-#include <TGUI/Color.hpp>
-#include <TGUI/TGUI.hpp>
-#include <TGUI/Widgets/Button.hpp>
-#include <TGUI/Widgets/EditBox.hpp>
-#include <TGUI/Widgets/EditBoxSlider.hpp>
-#include <TGUI/Widgets/Panel.hpp>
-#include <TGUI/Widgets/Picture.hpp>
-#include <vector>
+
+
 
 #include "ForwardDeclaration.h"
 
 // create a Tgui boxslider
-auto createBoxSlider(double maximum, double minimum, double x, double y,
-                     double step, double width, double height) {
+auto createBoxSlider(const float& maximum, const float& minimum, const float& x,
+                     const float& y) {
   auto BoxSlider = tgui::EditBoxSlider::create(minimum, maximum);
   BoxSlider->setPosition(x, y);
-  BoxSlider->setSize(width, height);
-  BoxSlider->setValue((maximum - std::abs(minimum)) / 2);
-  BoxSlider->setStep(step);
+  BoxSlider->setSize(200, 50);
+  BoxSlider->setValue((maximum - std::abs(minimum) / 2));
+  BoxSlider->setStep(0.01f);
   BoxSlider->setDecimalPlaces(2);
+  BoxSlider->getSliderRenderer()->setThumbColor(tgui::Color::Cyan);
   return BoxSlider;
 }
 
 // create a Tgui button
-auto createButton(double x, double y, const char *name, double width,
-                  double height) {
+auto createButton(const float& x, const float& y, const char* name) {
   auto Button = tgui::Button::create(name);
   Button->setPosition(x, y);
-  Button->setSize(width, height);
+  Button->setSize(200, 50);
   Button->setTextSize(15);
   Button->getRenderer()->setBackgroundColor(tgui::Color::Green);
   return Button;
@@ -45,17 +30,16 @@ auto createButton(double x, double y, const char *name, double width,
 
 // create a label
 //  Function to create a label with the given text and position
-auto createLabel(const std::string &text, float x, float y) {
+auto createLabel(const std::string& text, const float& x, const float& y) {
   auto label = tgui::Label::create(text);
   label->getRenderer()->setTextColor(
-      tgui::Color::White);  // Set text color to white
-  label->setPosition(x, y); // Set the position
+      tgui::Color::White);   // Set text color to white
+  label->setPosition(x, y);  // Set the position
   label->setTextSize(15);
   return label;
 }
 
-auto createEditBox(const std::string &text, float x, float y) {
-
+auto createEditBox(const std::string& text, const float& x, const float& y) {
   auto editbox = tgui::EditBox::create();
   editbox->setPosition(x, y);
   editbox->setSize(200, 50);
@@ -66,23 +50,21 @@ auto createEditBox(const std::string &text, float x, float y) {
 }
 
 // fill the TGui gui
-void fillGui(tgui::Gui &gui) {
+void fillGui(tgui::Gui& gui) {
   // edit for motion
-  gui.add(createBoxSlider(90, -90, 30, 550, 0.01, 200, 50), "theta_0");
-  gui.add(createBoxSlider(100, 0, 30, 650, 0.01, 200, 50), "r_1");
+  gui.add(createBoxSlider(90, -90, 30, 550), "theta_0");
+  gui.add(createBoxSlider(100, 0, 30, 650), "r_1");
 
-  float r_1 = gui.get<tgui::EditBoxSlider>("r_1")->getValue();
-
-  gui.add(createBoxSlider(r_1, -r_1, 280, 550, 0.01, 200, 50), "y_0");
-  gui.add(createBoxSlider(100, 0, 280, 650, 0.01, 200, 50), "r_2");
-  gui.add(createBoxSlider(1000, 0, 30, 750, 0.01, 200, 50), "l");
-  gui.add(createButton(280, 750, "Throw", 200, 50), "run");
+  gui.add(createBoxSlider(100, 0, 280, 550), "y_0");
+  gui.add(createBoxSlider(100, 0, 280, 650), "r_2");
+  gui.add(createBoxSlider(1000, 0, 30, 750), "l");
+  gui.add(createButton(280, 750, "Throw"), "run");
 
   // edit for gaussian distribution
-  gui.add(createBoxSlider(10, 0, 30, 30, 0.01, 200, 50), "sigma y_0");
-  gui.add(createBoxSlider(40, 0, 280, 30, 0.01, 200, 50), "sigma theta_0");
-  gui.add(createBoxSlider(10000, 0, 30, 105, 0.01, 200, 50), "n");
-  gui.add(createButton(280, 105, "Normal distribution", 200, 50), "gauss");
+  gui.add(createBoxSlider(10, 0, 30, 30), "sigma y_0");
+  gui.add(createBoxSlider(40, 0, 280, 30), "sigma theta_0");
+  gui.add(createBoxSlider(10000, 0, 30, 105), "n");
+  gui.add(createButton(280, 105, "Normal distribution"), "gauss");
 
   // Add labels for sliders
   gui.add(createLabel("theta_0", 30, 550 - 25), "label_theta_0");
@@ -97,7 +79,7 @@ void fillGui(tgui::Gui &gui) {
   // results of the throw
   gui.add(createEditBox("", 30.f, 850.f), "Final point");
   gui.add(createEditBox("", 280.f, 850.f), "Final angle");
-//results of the normal distribution
+  // results of the normal distribution
   gui.add(createEditBox("", 30.f, 180.f), "Position mean");
   gui.add(createEditBox("", 280.f, 180.f), "Angle mean");
   gui.add(createEditBox("", 30.f, 255.f), "Position stddev");
@@ -107,13 +89,15 @@ void fillGui(tgui::Gui &gui) {
   gui.add(createEditBox("", 30.f, 405.f), "Position kurtosis");
   gui.add(createEditBox("", 280.f, 405.f), "Angle kurtosis");
 
-  //editbox labels
+  // editbox labels
 
   gui.add(createLabel("Final position mean", 30, 180 - 25), "label_p_mean");
   gui.add(createLabel("Final angle mean", 280, 180 - 25), "label_a_mean");
-  gui.add(createLabel("Final position std dev", 30, 255 - 25), "label_p_stddev");
+  gui.add(createLabel("Final position std dev", 30, 255 - 25),
+          "label_p_stddev");
   gui.add(createLabel("Final angle stddev", 280, 255 - 25), "label_a_stddev");
-  gui.add(createLabel("Position Skewedness", 30, 330 - 25), "label_p_skewedness");
+  gui.add(createLabel("Position Skewedness", 30, 330 - 25),
+          "label_p_skewedness");
   gui.add(createLabel("Angle Skewedness", 280, 330 - 25), "label_a_skewedness");
   gui.add(createLabel("Position Kurtosis", 30, 405 - 25), "label_p_kurtosis");
   gui.add(createLabel("Angle Kurtosis", 280, 405 - 25), "label_a_kurtosis");
@@ -121,8 +105,9 @@ void fillGui(tgui::Gui &gui) {
   gui.add(createLabel("Angle of incidence", 280, 850 - 25), "label_f_angle");
 }
 
-void makeDrawableSystem(sf::CircleShape &ball, sf::VertexArray &top_line,
-                        sf::VertexArray &bottom_line, Setup &s, double& scale) {
+void makeDrawableSystem(sf::CircleShape& ball, sf::VertexArray& top_line,
+                        sf::VertexArray& bottom_line, const Setup& s,
+                        const float& scale) {
   // creation of top line
   top_line[0].position = sf::Vector2f(0, scale * s.r_1);
   top_line[0].color = sf::Color::White;
@@ -139,4 +124,48 @@ void makeDrawableSystem(sf::CircleShape &ball, sf::VertexArray &top_line,
   ball.setFillColor(sf::Color::White);
   ball.setPosition(0, scale * s.y_0);
   ball.setOrigin(ball.getRadius(), ball.getRadius());
+}
+
+void setWindow(sf::RenderWindow& window, sf::CircleShape& ball,
+               sf::VertexArray& hor_line, sf::VertexArray& vert_line,
+               sf::Sprite& sprite) {
+  ball.setFillColor(sf::Color::Black);
+  ball.setOutlineColor(sf::Color::Black);
+
+  // drawing the window
+  window.create(sf::VideoMode(1400, 950), "Biliardo",
+                sf::Style::Titlebar | sf::Style::Close);
+  sf::View view(sf::Vector2f(100, -225), sf::Vector2f(1400, 950));
+  window.setView(view);
+  window.setFramerateLimit(60);
+
+  // centering the window
+  sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
+  float posX = (static_cast<float>(desktop.width) -
+                static_cast<float>(window.getSize().x)) /
+               2.f;
+  float posY = (static_cast<float>(desktop.height) -
+                static_cast<float>(window.getSize().y) - 100.f) /
+               2.f;
+
+  // Imposta la posizione della finestra
+  window.setPosition(
+      sf::Vector2i(static_cast<int>(posX), static_cast<int>(posY)));
+
+  // creation of horizontal and vertical line for layout
+
+  // creation horizontal line
+  hor_line[0].position = sf::Vector2f(-800, -228);
+  hor_line[0].color = sf::Color::White;
+  hor_line[1].position = sf::Vector2f(800, -228);
+  hor_line[1].color = sf::Color::White;
+
+  // creation vertical line
+  vert_line[0].position = sf::Vector2f(-50, -1000);
+  vert_line[0].color = sf::Color::White;
+  vert_line[1].position = sf::Vector2f(-50, 1000);
+  vert_line[1].color = sf::Color::White;
+
+  sprite.setPosition(-50, -700);
+  sprite.setScale(1.23f, 1.0f);
 }

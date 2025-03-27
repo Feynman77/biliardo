@@ -1,18 +1,14 @@
 #ifndef FORWARDDECLARATION_H
 #define FORWARDDECLARATION_H
 
-#include <SFML/Graphics/CircleShape.hpp>
-#include <SFML/Graphics/RenderWindow.hpp>
-#include <SFML/Window.hpp>
-#include <TGUI/Backend/SFML-Graphics.hpp>
-#include <TGUI/Widgets/EditBox.hpp>
-#include <TGUI/Widgets/EditBoxSlider.hpp>
-#include <TGUI/Widgets/Panel.hpp>
-#include <cmath>
-#include <iostream>
-#include <vector>
+#include <TCanvas.h>
 
-#include "TH1F.h"
+
+#include <cmath>
+
+#include <vector>
+#include "graphic.h"
+
 #include "line.h"
 
 struct Point {
@@ -21,11 +17,11 @@ struct Point {
 };
 
 struct Setup {
-  double y_0;
-  double theta_0;
-  double l;
-  double r_1;
-  double r_2;
+  float y_0;
+  float theta_0;
+  float l;
+  float r_1;
+  float r_2;
 };
 
 struct System {
@@ -34,31 +30,22 @@ struct System {
   Line first_throw;
 };
 
-Setup getParametersFromUser(tgui::Gui&);
-
-Line makeLineFromPoints(Point p1, Point p2);
-
-Line makeLineFromAngle(double theta, double q);
-
-Point findInterception(Line l1, Line l2);
-
-System makeSystemFromSetup(Setup s);
-
-Point calculateFirstHit(Point interception_top_line,
-                        Point interception_bottom_line, Setup setup,
-                        System system);
-
-Point getFinalPoint(Point& new_interception, Point& last_interception,
-                    System& system, Setup& setup, std::vector<Point>& positions,
-                    double& speed, double& scale, tgui::Gui& gui);
-
-Point calculateFinalPoint(Point new_interception, Point last_interception,
-                          System system, Setup setup, TH1F& h1, TH1F& h2);
-
-void getNormalDistribution(Setup& setup, tgui::Gui& gui);
-
-void fillVector(std::vector<Point>& positions, Point last_interception,
-                Point new_interception, Line path, double& speed,
-                double& scale);
+Setup getParametersFromUser(const tgui::Gui &gui);
+Line makeLineFromPoints(const Point &p_1, const Point &p_2);
+Line makeLineFromAngle(const double &theta, const double &q);
+Point findInterception(const Line &l_1, const Line &l_2);
+System makeSystemFromSetup(const Setup &s);
+Point calculateFirstHit(const double &l, const System &system);
+void fillVector(std::vector<Point> &positions, const Point &last_interception,
+                const Point &new_interception, const Line &path,
+                const double &speed, const double &scale, const double &l);
+void getFinalPoint(Point &new_interception, Point &last_interception,
+                   const System &system, const double &l,
+                   std::vector<Point> &positions, const double &speed,
+                   const double &scale, tgui::Gui &gui);
+void calculateFinalPoint(Point &new_interception, Point &last_interception,
+                         const System &system, const double &l, TH1F &h1,
+                         TH1F &h2);
+void getNormalDistribution(const Setup &setup, tgui::Gui &gui);
 
 #endif
