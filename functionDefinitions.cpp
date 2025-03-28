@@ -1,8 +1,9 @@
 
+#include <TH1F.h>
+
 #include <string>
 
 #include "ForwardDeclaration.h"
-#include <TH1F.h>
 #include "TRandom.h"
 
 // create the setup from user
@@ -121,34 +122,46 @@ void fillVector(std::vector<Point> &positions, const Point &last_interception,
 }
 
 // calculate the final point
-void getFinalPoint(Point &new_interception, Point &last_interception,
-                   const System &system, const double &l,
-                   std::vector<Point> &positions, const double &speed,
-                   const double &scale, tgui::Gui &gui) {
+Point getFinalPoint(Point &new_interception, Point &last_interception,
+                    const System &system, const double &l,
+                    std::vector<Point> &positions, const double &speed,
+                    const double &scale, tgui::Gui &gui) {
+  // setting the initial situation
   Line path(system.first_throw.getSlope(), system.first_throw.getQ());
+  Point p;
 
-  // ball bounces
+  // ball start bouncing
   while (last_interception.x <= new_interception.x) {
-    // valid throw final path
+    // valid throw final path (give us the result)
     if (new_interception.x >= l) {
       fillVector(positions, last_interception, new_interception, path, speed,
                  scale, l);
+
+      // calculate the final informations
       double result{path.getSlope() * l +
-                    path.getQ()};  // wrong sign for no reason
+                    path.getQ()};  // wrong sign but there is a reason ( we do
+                                   // the calculations on the flipped system
+                                   // because sfml is flipped)
       double final_angle{atan(path.getSlope())};
+
+      p.x = l;
+      p.y = -result;
+
       gui.get<tgui::EditBox>("Final angle")
           ->setText(std::to_string(-final_angle));
       gui.get<tgui::EditBox>("Final point")
           ->setText((std::to_string(l) + "; " + std::to_string(-result)));
+
       break;
     };
 
-    // ball hits top line first (Francesco)
+    // ball hits top line first
     if (new_interception.x < l && new_interception.x >= 0 &&
         new_interception.y > 0) {
-      // we find the path after hitting the top line
       fillVector(positions, last_interception, new_interception, path, speed,
                  scale, l);
+
+      // path after the ball hit the top line
       path.setSlope((path.getSlope() * system.top_line.getSlope() *
                          system.top_line.getSlope() -
                      path.getSlope() + 2 * system.top_line.getSlope()) /
@@ -161,12 +174,13 @@ void getFinalPoint(Point &new_interception, Point &last_interception,
       new_interception = findInterception(path, system.bottom_line);
     };
 
-    // ball hits bottom line first (Francesco)
+    // ball hits bottom line first
     if (new_interception.x < l && new_interception.x >= 0 &&
         new_interception.y < 0) {
       fillVector(positions, last_interception, new_interception, path, speed,
                  scale, l);
-      // we find the path after hitting the bottom line
+
+      // path after the ball hit the bottom line
       path.setSlope(-path.getSlope());
       path.setSlope((-1) *
                     (path.getSlope() * system.top_line.getSlope() *
@@ -181,19 +195,26 @@ void getFinalPoint(Point &new_interception, Point &last_interception,
       new_interception = findInterception(path, system.top_line);
     };
 
+    // divergent lines
     if ((system.top_line.getSlope() > system.bottom_line.getSlope()) &&
         (new_interception.x < 0)) {
-      new_interception.y = path.getSlope() * l + path.getQ();
+      new_interception.y = path.getSlope() * l * path.getQ();
       new_interception.x = l;
       fillVector(positions, last_interception, new_interception, path, speed,
                  scale, l);
+
       double result{path.getSlope() * l +
-                    path.getQ()};  // wrong sign for no reason
+                    path.getQ()};  // wrong sign for a reason
       double final_angle{atan(path.getSlope())};
+
+      p.x = l;
+      p.y = -result;
+
       gui.get<tgui::EditBox>("Final angle")
           ->setText(std::to_string(-final_angle));
       gui.get<tgui::EditBox>("Final point")
-          ->setText((std::to_string(l) + "; " + std::to_string(result)));
+          ->setText((std::to_string(l) + "; " + std::to_string(-result)));
+
       break;
     };
 
@@ -242,10 +263,10 @@ void getFinalPoint(Point &new_interception, Point &last_interception,
         };
       };
     };
-  }
-}
+  };
 
-// we arrived here
+  return p;
+}
 
 void calculateFinalPoint(Point &new_interception, Point &last_interception,
                          const System &system, const double &l, TH1F &h1,

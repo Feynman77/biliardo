@@ -1,5 +1,7 @@
 
 
+#include <SFML/System/Clock.hpp>
+
 #include "ForwardDeclaration.h"
 
 int main() {
@@ -52,7 +54,7 @@ int main() {
       }
       if (event.type == sf::Event::Resized) {
         window.setSize(sf::Vector2u(1400, 950));
-    }
+      }
     }
 
     if (throw_pressed == true) {
@@ -71,7 +73,7 @@ int main() {
       Point last_interception{0, 0};
       Point new_interception{calculateFirstHit(setup.l, system)};
 
-      getFinalPoint(new_interception, last_interception, system, setup.l,
+       getFinalPoint(new_interception, last_interception, system, setup.l,
                     positions, speed, scale, gui);
 
       i = 0;

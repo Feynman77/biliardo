@@ -3,12 +3,10 @@
 
 #include <TCanvas.h>
 
-
 #include <cmath>
-
 #include <vector>
-#include "graphic.h"
 
+#include "graphic.h"
 #include "line.h"
 
 struct Point {
@@ -39,10 +37,10 @@ Point calculateFirstHit(const double &l, const System &system);
 void fillVector(std::vector<Point> &positions, const Point &last_interception,
                 const Point &new_interception, const Line &path,
                 const double &speed, const double &scale, const double &l);
-void getFinalPoint(Point &new_interception, Point &last_interception,
-                   const System &system, const double &l,
-                   std::vector<Point> &positions, const double &speed,
-                   const double &scale, tgui::Gui &gui);
+Point getFinalPoint(Point &new_interception, Point &last_interception,
+                    const System &system, const double &l,
+                    std::vector<Point> &positions, const double &speed,
+                    const double &scale, tgui::Gui &gui);
 void calculateFinalPoint(Point &new_interception, Point &last_interception,
                          const System &system, const double &l, TH1F &h1,
                          TH1F &h2);
