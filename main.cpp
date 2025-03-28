@@ -1,8 +1,11 @@
 
-
 #include <SFML/System/Clock.hpp>
+#include <string>
 
 #include "ForwardDeclaration.h"
+
+
+
 
 int main() {
   // initial setting
@@ -58,7 +61,7 @@ int main() {
     }
 
     if (throw_pressed == true) {
-      ball.setFillColor(sf::Color::Green);  // why isn't it green???
+      ball.setFillColor(sf::Color::Green); // why isn't it green???
       ball.setOutlineColor(sf::Color::Green);
 
       positions.clear();
@@ -73,8 +76,18 @@ int main() {
       Point last_interception{0, 0};
       Point new_interception{calculateFirstHit(setup.l, system)};
 
-       getFinalPoint(new_interception, last_interception, system, setup.l,
-                    positions, speed, scale, gui);
+      Angle_and_point result =
+          getFinalPoint(new_interception, last_interception, system, setup.l,
+                        positions, speed, scale);
+      if (result.y == 0 && result.theta == 180) {
+        gui.get<tgui::EditBox>("Final angle")->setText("Invalid throw");
+        gui.get<tgui::EditBox>("Final point")->setText("Invalid throw");
+      } else {
+        gui.get<tgui::EditBox>("Final angle")
+            ->setText(std::to_string(result.theta));
+        gui.get<tgui::EditBox>("Final point")
+            ->setText(std::to_string(setup.l) + ";" + std::to_string(result.y));
+      }
 
       i = 0;
       throw_pressed = false;
@@ -129,3 +142,4 @@ problema: in getfinalpoint calcola, per motivi a noi ignoti, angolo e posizione
 finale girati di segno
 
 */
+

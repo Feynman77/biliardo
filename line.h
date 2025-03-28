@@ -1,12 +1,13 @@
 #ifndef LINE_H
 #define LINE_H
 
+
 class Line {
- private:
+private:
   double m_slope{};
   double m_q{};
 
- public:
+public:
   double getSlope() const { return m_slope; }
   void setSlope(double slope) { m_slope = slope; }
 

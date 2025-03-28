@@ -7,8 +7,11 @@
 #include <vector>
 
 #include "graphic.h"
-#include "line.h"
 
+struct Line {
+  double slope;
+  double q;
+};
 struct Point {
   double x;
   double y;
@@ -28,6 +31,11 @@ struct System {
   Line first_throw;
 };
 
+struct Angle_and_point {
+  double theta;
+  double y;
+};
+
 Setup getParametersFromUser(const tgui::Gui &gui);
 Line makeLineFromPoints(const Point &p_1, const Point &p_2);
 Line makeLineFromAngle(const double &theta, const double &q);
@@ -37,10 +45,10 @@ Point calculateFirstHit(const double &l, const System &system);
 void fillVector(std::vector<Point> &positions, const Point &last_interception,
                 const Point &new_interception, const Line &path,
                 const double &speed, const double &scale, const double &l);
-Point getFinalPoint(Point &new_interception, Point &last_interception,
-                    const System &system, const double &l,
-                    std::vector<Point> &positions, const double &speed,
-                    const double &scale, tgui::Gui &gui);
+Angle_and_point getFinalPoint(Point &new_interception, Point &last_interception,
+                              const System &system, const double &l,
+                              std::vector<Point> &positions,
+                              const double &speed, const double &scale);
 void calculateFinalPoint(Point &new_interception, Point &last_interception,
                          const System &system, const double &l, TH1F &h1,
                          TH1F &h2);
