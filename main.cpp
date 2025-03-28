@@ -50,6 +50,9 @@ int main() {
       if (event.type == sf::Event::Closed) {
         window.close();
       }
+      if (event.type == sf::Event::Resized) {
+        window.setSize(sf::Vector2u(1400, 950));
+    }
     }
 
     if (throw_pressed == true) {
