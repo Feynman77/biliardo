@@ -4,9 +4,6 @@
 
 #include "ForwardDeclaration.h"
 
-
-
-
 int main() {
   // initial setting
   sf::RenderWindow window;
@@ -32,6 +29,7 @@ int main() {
   sf::VertexArray bottom_line(sf::Lines, 2);
   sf::VertexArray hor_line(sf::Lines, 2);
   sf::VertexArray vert_line(sf::Lines, 2);
+  
   sf::Texture texture;
   sf::Sprite sprite;
 
@@ -45,9 +43,7 @@ int main() {
     sf::Event event;
     // check all the window's events that were triggered since the last
     // iteration of the loop
-    float r_1 = gui.get<tgui::EditBoxSlider>("r_1")->getValue();
-    gui.get<tgui::EditBoxSlider>("y_0")->setMaximum(r_1 - 0.01f);
-    gui.get<tgui::EditBoxSlider>("y_0")->setMinimum(-r_1 + 0.01f);
+    sliderUpdate(gui);
 
     while (window.pollEvent(event)) {
       gui.handleEvent(event);
@@ -61,34 +57,7 @@ int main() {
     }
 
     if (throw_pressed == true) {
-      ball.setFillColor(sf::Color::Green); // why isn't it green???
-      ball.setOutlineColor(sf::Color::Green);
-
-      positions.clear();
-      setup = (getParametersFromUser(gui));
-      float scale_reference =
-          std::max({setup.l / 30, setup.r_1 / 8, setup.r_2 / 8});
-      scale = 25 / scale_reference;
-      speed = 1.5f * scale_reference;
-      makeDrawableSystem(ball, top_line, bottom_line, setup, scale);
-      System system(makeSystemFromSetup(setup));
-
-      Point last_interception{0, 0};
-      Point new_interception{calculateFirstHit(setup.l, system)};
-
-      Angle_and_point result =
-          getFinalPoint(new_interception, last_interception, system, setup.l,
-                        positions, speed, scale);
-      if (result.y == 0 && result.theta == 180) {
-        gui.get<tgui::EditBox>("Final angle")->setText("Invalid throw");
-        gui.get<tgui::EditBox>("Final point")->setText("Invalid throw");
-      } else {
-        gui.get<tgui::EditBox>("Final angle")
-            ->setText(std::to_string(result.theta));
-        gui.get<tgui::EditBox>("Final point")
-            ->setText(std::to_string(setup.l) + ";" + std::to_string(result.y));
-      }
-
+      run(ball, positions, setup, scale, speed, gui, top_line, bottom_line);
       i = 0;
       throw_pressed = false;
     };
@@ -142,4 +111,3 @@ problema: in getfinalpoint calcola, per motivi a noi ignoti, angolo e posizione
 finale girati di segno
 
 */
-

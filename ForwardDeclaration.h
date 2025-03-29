@@ -54,4 +54,9 @@ void calculateFinalPoint(Point &new_interception, Point &last_interception,
                          TH1F &h2);
 void getNormalDistribution(const Setup &setup, tgui::Gui &gui);
 
+void run(sf::CircleShape &ball, std::vector<Point> &positions, Setup &setup,
+         float &scale, float &speed, tgui::Gui &gui, sf::VertexArray &top_line,
+         sf::VertexArray &bottom_line);
+
+void sliderUpdate(tgui::Gui &gui);
 #endif

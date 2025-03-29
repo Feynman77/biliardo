@@ -6,9 +6,6 @@
 #include "ForwardDeclaration.h"
 #include "TRandom.h"
 
-
-
-
 // create the setup from user
 Setup getParametersFromUser(const tgui::Gui &gui) {
   Setup s;
@@ -212,12 +209,12 @@ Angle_and_point getFinalPoint(Point &new_interception, Point &last_interception,
           // we find the path after hitting the top line
           fillVector(positions, last_interception, new_interception, path,
                      speed, scale, l);
-          path.slope=(
-              (path.slope * system.top_line.slope * system.top_line.slope -
-               path.slope + 2 * system.top_line.slope) /
-              (1 - system.top_line.slope * system.top_line.slope +
-               2 * path.slope * system.top_line.slope));
-          path.q=(new_interception.y - path.slope * new_interception.x);
+          path.slope =
+              ((path.slope * system.top_line.slope * system.top_line.slope -
+                path.slope + 2 * system.top_line.slope) /
+               (1 - system.top_line.slope * system.top_line.slope +
+                2 * path.slope * system.top_line.slope));
+          path.q = (new_interception.y - path.slope * new_interception.x);
 
           last_interception = new_interception;
           new_interception = findInterception(path, system.bottom_line);
@@ -229,14 +226,14 @@ Angle_and_point getFinalPoint(Point &new_interception, Point &last_interception,
           fillVector(positions, last_interception, new_interception, path,
                      speed, scale, l);
           // we find the path after hitting the bottom line
-          path.slope=(-path.slope);
-          path.slope=(
-              (-1) *
-              (path.slope * system.top_line.slope * system.top_line.slope -
-               path.slope + 2 * system.top_line.slope) /
-              (1 - system.top_line.slope * system.top_line.slope +
-               2 * path.slope * system.top_line.slope));
-          path.q=(new_interception.y - path.slope * new_interception.x);
+          path.slope = (-path.slope);
+          path.slope =
+              ((-1) *
+               (path.slope * system.top_line.slope * system.top_line.slope -
+                path.slope + 2 * system.top_line.slope) /
+               (1 - system.top_line.slope * system.top_line.slope +
+                2 * path.slope * system.top_line.slope));
+          path.q = (new_interception.y - path.slope * new_interception.x);
 
           last_interception = new_interception;
           new_interception = findInterception(path, system.top_line);
@@ -272,12 +269,12 @@ void calculateFinalPoint(Point &new_interception, Point &last_interception,
         new_interception.y > 0) {
       // we find the path after hitting the top line
 
-      path.slope=(
-          (path.slope * system.top_line.slope * system.top_line.slope -
-           path.slope + 2 * system.top_line.slope) /
-          (1 - system.top_line.slope * system.top_line.slope +
-           2 * path.slope * system.top_line.slope));
-      path.q=(new_interception.y - path.slope * new_interception.x);
+      path.slope =
+          ((path.slope * system.top_line.slope * system.top_line.slope -
+            path.slope + 2 * system.top_line.slope) /
+           (1 - system.top_line.slope * system.top_line.slope +
+            2 * path.slope * system.top_line.slope));
+      path.q = (new_interception.y - path.slope * new_interception.x);
       last_interception = new_interception;
 
       new_interception = findInterception(path, system.bottom_line);
@@ -287,14 +284,14 @@ void calculateFinalPoint(Point &new_interception, Point &last_interception,
     if (new_interception.x < l && new_interception.x >= 0 &&
         new_interception.y < 0) {
       // we find the path after hitting the bottom line
-      path.slope=(-path.slope);
-      path.slope=(
-          (-1) *
-          (path.slope * system.top_line.slope * system.top_line.slope -
-           path.slope + 2 * system.top_line.slope) /
-          (1 - system.top_line.slope * system.top_line.slope +
-           2 * path.slope * system.top_line.slope));
-      path.q=(new_interception.y - path.slope * new_interception.x);
+      path.slope = (-path.slope);
+      path.slope =
+          ((-1) *
+           (path.slope * system.top_line.slope * system.top_line.slope -
+            path.slope + 2 * system.top_line.slope) /
+           (1 - system.top_line.slope * system.top_line.slope +
+            2 * path.slope * system.top_line.slope));
+      path.q = (new_interception.y - path.slope * new_interception.x);
 
       last_interception = new_interception;
       new_interception = findInterception(path, system.top_line);
@@ -362,4 +359,42 @@ void getNormalDistribution(const Setup &setup, tgui::Gui &gui) {
       ->setText(std::to_string(h2.GetSkewness()));
   gui.get<tgui::EditBox>("Angle kurtosis")
       ->setText(std::to_string(h2.GetKurtosis()));
+}
+
+void run(sf::CircleShape & ball, std::vector<Point> &positions, Setup &setup,
+           float &scale, float &speed, tgui::Gui &gui,
+           sf::VertexArray &top_line, sf::VertexArray &bottom_line) {
+  ball.setFillColor(sf::Color::Green); // why isn't it green???
+  ball.setOutlineColor(sf::Color::Green);
+
+  positions.clear();
+  setup = (getParametersFromUser(gui));
+  float scale_reference =
+      std::max({setup.l / 30, setup.r_1 / 8, setup.r_2 / 8});
+  scale = 25 / scale_reference;
+  speed = 1.5f * scale_reference;
+  makeDrawableSystem(ball, top_line, bottom_line, setup, scale);
+  System system(makeSystemFromSetup(setup));
+
+  Point last_interception{0, 0};
+  Point new_interception{calculateFirstHit(setup.l, system)};
+
+  Angle_and_point result =
+      getFinalPoint(new_interception, last_interception, system, setup.l,
+                    positions, speed, scale);
+  if (result.y == 0 && result.theta == 180) {
+    gui.get<tgui::EditBox>("Final angle")->setText("Invalid throw");
+    gui.get<tgui::EditBox>("Final point")->setText("Invalid throw");
+  } else {
+    gui.get<tgui::EditBox>("Final angle")
+        ->setText(std::to_string(result.theta));
+    gui.get<tgui::EditBox>("Final point")
+        ->setText(std::to_string(setup.l) + ";" + std::to_string(result.y));
+  }
+}
+
+void sliderUpdate (tgui::Gui& gui) {
+  float r_1 = gui.get<tgui::EditBoxSlider>("r_1")->getValue();
+    gui.get<tgui::EditBoxSlider>("y_0")->setMaximum(r_1 - 0.01f);
+    gui.get<tgui::EditBoxSlider>("y_0")->setMinimum(-r_1 + 0.01f);
 }
