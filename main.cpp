@@ -22,14 +22,13 @@ int main() {
 
   std::vector<Point> positions{};
 
-  // creation of the ball
+  // interfaccia
   sf::CircleShape ball(1);
-
   sf::VertexArray top_line(sf::Lines, 2);
   sf::VertexArray bottom_line(sf::Lines, 2);
   sf::VertexArray hor_line(sf::Lines, 2);
   sf::VertexArray vert_line(sf::Lines, 2);
-  
+
   sf::Texture texture;
   sf::Sprite sprite;
 
@@ -41,6 +40,7 @@ int main() {
 
   while (window.isOpen()) {
     sf::Event event;
+
     // check all the window's events that were triggered since the last
     // iteration of the loop
     sliderUpdate(gui);

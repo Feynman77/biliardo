@@ -54,7 +54,6 @@ void fillGui(tgui::Gui& gui) {
   // edit for motion
   gui.add(createBoxSlider(90, -90, 30, 550), "theta_0");
   gui.add(createBoxSlider(100, 0, 30, 650), "r_1");
-
   gui.add(createBoxSlider(100, 0, 280, 550), "y_0");
   gui.add(createBoxSlider(100, 0, 280, 650), "r_2");
   gui.add(createBoxSlider(1000, 0, 30, 750), "l");
@@ -79,6 +78,7 @@ void fillGui(tgui::Gui& gui) {
   // results of the throw
   gui.add(createEditBox("", 30.f, 850.f), "Final point");
   gui.add(createEditBox("", 280.f, 850.f), "Final angle");
+
   // results of the normal distribution
   gui.add(createEditBox("", 30.f, 180.f), "Position mean");
   gui.add(createEditBox("", 280.f, 180.f), "Angle mean");
@@ -90,7 +90,6 @@ void fillGui(tgui::Gui& gui) {
   gui.add(createEditBox("", 280.f, 405.f), "Angle kurtosis");
 
   // editbox labels
-
   gui.add(createLabel("Final position mean", 30, 180 - 25), "label_p_mean");
   gui.add(createLabel("Final angle mean", 280, 180 - 25), "label_a_mean");
   gui.add(createLabel("Final position std dev", 30, 255 - 25),
