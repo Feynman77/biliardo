@@ -12,15 +12,17 @@ int main() {
 
   Setup setup;
 
+  // TODO uniformare la sintassi di inizializzazione (= vs {})
   bool throw_pressed = false;
   bool normal_distribution_pressed = false;
 
   float scale{25};
   float speed{2};
 
+  // FIXME brutto nome
   unsigned int i{0};
 
-  std::vector<Point> positions{};
+  std::vector<Point> animation_positions{};
 
   // interfaccia
   sf::CircleShape ball(1);
@@ -29,6 +31,7 @@ int main() {
   sf::VertexArray hor_line(sf::Lines, 2);
   sf::VertexArray vert_line(sf::Lines, 2);
 
+  // FIXME Dammi un nome più descrittivo
   sf::Texture texture;
   sf::Sprite sprite;
 
@@ -43,41 +46,43 @@ int main() {
 
     // check all the window's events that were triggered since the last
     // iteration of the loop
-    sliderUpdate(gui);
-
     while (window.pollEvent(event)) {
       gui.handleEvent(event);
       // "close requested" event: we close the window
       if (event.type == sf::Event::Closed) {
         window.close();
       }
+      //deny resizing
       if (event.type == sf::Event::Resized) {
         window.setSize(sf::Vector2u(1400, 950));
       }
     }
 
+    sliderUpdate(gui);
+
     if (throw_pressed == true) {
-      run(ball, positions, setup, scale, speed, gui, top_line, bottom_line);
+      run(ball, animation_positions, setup, scale, speed, gui, top_line, bottom_line);
       i = 0;
       throw_pressed = false;
     };
 
-    if (i < positions.size() && positions.size() != 0) {
-      ball.setPosition(static_cast<float>(positions[i].x),
-                       static_cast<float>(positions[i].y));
+    if (i < animation_positions.size() && !animation_positions.empty()) {
+      ball.setPosition(static_cast<float>(animation_positions[i].x),
+                       static_cast<float>(animation_positions[i].y));
       i++;
     }
 
-    if (i >= positions.size() && positions.size() != 0) {
-      positions.clear();
+    if (i >= animation_positions.size() && !animation_positions.empty()) {
+      animation_positions.clear();
       i = 0;
     }
 
     if (normal_distribution_pressed == true) {
-      setup = (getParametersFromUser(gui));
+      normal_distribution_pressed = false;
+      
+      setup = getParametersFromUser(gui);
       getNormalDistribution(setup, gui);
 
-      normal_distribution_pressed = false;
       texture.loadFromFile("histos.png");
       sprite.setTexture(texture);
     };

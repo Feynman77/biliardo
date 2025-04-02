@@ -124,6 +124,7 @@ Angle_and_point getFinalPoint(Point &new_interception, Point &last_interception,
   Line path{system.first_throw.slope, system.first_throw.q};
   Angle_and_point p;
 
+  // MIAOPINIONE il possibile doppio rimbalzo non è una grande idea di design
   // ball start bouncing
   while (last_interception.x <= new_interception.x) {
     // valid throw final path (give us the result)
@@ -200,7 +201,7 @@ Angle_and_point getFinalPoint(Point &new_interception, Point &last_interception,
 
     // ball goes back
     if (new_interception.x < last_interception.x) {
-
+      // FIXME forse puoi mettermi fuori dall'altro while
       while (last_interception.x >= new_interception.x &&
              last_interception.x > 0) {
         // ball hits top line first (Francesco)
@@ -361,19 +362,19 @@ void getNormalDistribution(const Setup &setup, tgui::Gui &gui) {
       ->setText(std::to_string(h2.GetKurtosis()));
 }
 
-void run(sf::CircleShape & ball, std::vector<Point> &positions, Setup &setup,
-           float &scale, float &speed, tgui::Gui &gui,
-           sf::VertexArray &top_line, sf::VertexArray &bottom_line) {
-  ball.setFillColor(sf::Color::Green); // why isn't it green???
-  ball.setOutlineColor(sf::Color::Green);
-
+// FIXME remove setup parameter
+void run(sf::CircleShape &ball, std::vector<Point> &positions, Setup &setup,
+         float &scale, float &speed, tgui::Gui &gui, sf::VertexArray &top_line,
+         sf::VertexArray &bottom_line) {
   positions.clear();
   setup = (getParametersFromUser(gui));
+  // FIXME spiegami pls
   float scale_reference =
       std::max({setup.l / 30, setup.r_1 / 8, setup.r_2 / 8});
   scale = 25 / scale_reference;
   speed = 1.5f * scale_reference;
   makeDrawableSystem(ball, top_line, bottom_line, setup, scale);
+  // FIXME Perché non è un costruttore??
   System system(makeSystemFromSetup(setup));
 
   Point last_interception{0, 0};
@@ -393,8 +394,8 @@ void run(sf::CircleShape & ball, std::vector<Point> &positions, Setup &setup,
   }
 }
 
-void sliderUpdate (tgui::Gui& gui) {
+void sliderUpdate(tgui::Gui &gui) {
   float r_1 = gui.get<tgui::EditBoxSlider>("r_1")->getValue();
-    gui.get<tgui::EditBoxSlider>("y_0")->setMaximum(r_1 - 0.01f);
-    gui.get<tgui::EditBoxSlider>("y_0")->setMinimum(-r_1 + 0.01f);
+  gui.get<tgui::EditBoxSlider>("y_0")->setMaximum(r_1 - 0.01f);
+  gui.get<tgui::EditBoxSlider>("y_0")->setMinimum(-r_1 + 0.01f);
 }

@@ -120,7 +120,7 @@ void makeDrawableSystem(sf::CircleShape& ball, sf::VertexArray& top_line,
   bottom_line[1].color = sf::Color::White;
 
   // creation of the ball
-  ball.setFillColor(sf::Color::White);
+  ball.setFillColor(sf::Color::Green);
   ball.setPosition(0, scale * s.y_0);
   ball.setOrigin(ball.getRadius(), ball.getRadius());
 }

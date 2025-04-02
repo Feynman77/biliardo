@@ -4,18 +4,6 @@
 
 #include <TGUI/Backend/SFML-Graphics.hpp>
 
-#include <SFML/Graphics.hpp>
-#include <SFML/Graphics/CircleShape.hpp>
-#include <SFML/Graphics/RenderWindow.hpp>
-#include <SFML/Graphics/Sprite.hpp>
-#include <SFML/Graphics/Texture.hpp>
-#include <SFML/Graphics/VertexArray.hpp>
-#include <SFML/Graphics/View.hpp>
-#include <SFML/System/Vector2.hpp>
-#include <SFML/Window.hpp>
-#include <SFML/Window/Event.hpp>
-#include <SFML/Window/VideoMode.hpp>
-#include <SFML/Window/Window.hpp>
 #include <TGUI/Color.hpp>
 #include <TGUI/TGUI.hpp>
 #include <TGUI/Widgets/Button.hpp>
