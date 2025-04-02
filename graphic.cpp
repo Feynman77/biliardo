@@ -132,8 +132,6 @@ void setWindow(sf::RenderWindow& window, sf::CircleShape& ball,
   ball.setOutlineColor(sf::Color::Black);
 
   // drawing the window
-  window.create(sf::VideoMode(1400, 950), "Biliardo",
-                sf::Style::Titlebar | sf::Style::Close);
   sf::View view(sf::Vector2f(100, -225), sf::Vector2f(1400, 950));
   window.setView(view);
   window.setFramerateLimit(60);

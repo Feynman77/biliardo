@@ -6,7 +6,8 @@
 
 int main() {
   // initial setting
-  sf::RenderWindow window;
+  sf::RenderWindow window{sf::VideoMode(1400, 950), "Biliardo",
+                          sf::Style::Titlebar | sf::Style::Close};
   tgui::Gui gui{window};
   fillGui(gui);
 
