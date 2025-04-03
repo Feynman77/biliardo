@@ -1,9 +1,7 @@
 #ifndef GRAPHIC_H
 #define GRAPHIC_H
 
-
 #include <TGUI/Backend/SFML-Graphics.hpp>
-
 #include <TGUI/Color.hpp>
 #include <TGUI/TGUI.hpp>
 #include <TGUI/Widgets/Button.hpp>

@@ -10,33 +10,28 @@ int main() {
                           sf::Style::Titlebar | sf::Style::Close};
   tgui::Gui gui{window};
   fillGui(gui);
-
   Setup setup;
+  Speed_and_scale speed_and_scale{25, 2};
 
   // TODO uniformare la sintassi di inizializzazione (= vs {})
-  bool throw_pressed = false;
-  bool normal_distribution_pressed = false;
+  bool throw_pressed{false};
+  bool normal_distribution_pressed{false};
 
-  float scale{25};
-  float speed{2};
-
-  // FIXME brutto nome
-  unsigned int i{0};
+  unsigned int frame_index{0};
 
   std::vector<Point> animation_positions{};
 
-  // interfaccia
+  // layout
   sf::CircleShape ball(1);
   sf::VertexArray top_line(sf::Lines, 2);
   sf::VertexArray bottom_line(sf::Lines, 2);
   sf::VertexArray hor_line(sf::Lines, 2);
   sf::VertexArray vert_line(sf::Lines, 2);
 
-  // FIXME Dammi un nome più descrittivo
-  sf::Texture texture;
-  sf::Sprite sprite;
+  sf::Texture gauss_output_texture;
+  sf::Sprite gauss_output_sprite;
 
-  setWindow(window, ball, hor_line, vert_line, sprite);
+  setWindow(window, ball, hor_line, vert_line, gauss_output_sprite);
 
   gui.get<tgui::Button>("gauss")->onClick(
       [&]() { normal_distribution_pressed = true; });
@@ -53,40 +48,47 @@ int main() {
       if (event.type == sf::Event::Closed) {
         window.close();
       }
-      //deny resizing
+      // deny resizing
       if (event.type == sf::Event::Resized) {
         window.setSize(sf::Vector2u(1400, 950));
       }
     }
 
-    sliderUpdate(gui);
-
+    // press the button "Throw"
     if (throw_pressed == true) {
-      run(ball, animation_positions, setup, scale, speed, gui, top_line, bottom_line);
-      i = 0;
+      run(ball, animation_positions, speed_and_scale, gui, top_line,
+          bottom_line);
+      frame_index = 0;
       throw_pressed = false;
     };
 
-    if (i < animation_positions.size() && !animation_positions.empty()) {
-      ball.setPosition(static_cast<float>(animation_positions[i].x),
-                       static_cast<float>(animation_positions[i].y));
-      i++;
-    }
-
-    if (i >= animation_positions.size() && !animation_positions.empty()) {
-      animation_positions.clear();
-      i = 0;
-    }
-
+    // press the button "Run"
     if (normal_distribution_pressed == true) {
       normal_distribution_pressed = false;
-      
+
       setup = getParametersFromUser(gui);
       getNormalDistribution(setup, gui);
 
-      texture.loadFromFile("histos.png");
-      sprite.setTexture(texture);
+      gauss_output_texture.loadFromFile("histos.png");
+      gauss_output_sprite.setTexture(gauss_output_texture);
     };
+
+    // animation of the ball
+    if (frame_index < animation_positions.size() &&
+        !animation_positions.empty()) {
+      ball.setPosition(static_cast<float>(animation_positions[frame_index].x),
+                       static_cast<float>(animation_positions[frame_index].y));
+      frame_index++;
+    }
+
+    // refreshing the ball position
+    if (frame_index >= animation_positions.size() &&
+        !animation_positions.empty()) {
+      animation_positions.clear();
+      frame_index = 0;
+    }
+
+    sliderUpdate(gui);
 
     window.clear();
     window.draw(hor_line);
@@ -94,7 +96,7 @@ int main() {
     window.draw(top_line);
     window.draw(bottom_line);
     window.draw(ball);
-    window.draw(sprite);
+    window.draw(gauss_output_sprite);
     gui.draw();
     window.display();
   }
@@ -104,7 +106,7 @@ int main() {
 /*cosa dobbiamo fare:
 
 ottimizzare, migliorare leggibilità, togliere file inutili,
-implementare bottoni e imput a schermo e non a terminale, così come gli output,
+
 facoltativo: implementare linea tratteggiata per percorso,
 separare parte gaussiane con resto,
 
@@ -116,4 +118,7 @@ creazione funzione per disegnare le linee dentro il while
 problema: in getfinalpoint calcola, per motivi a noi ignoti, angolo e posizione
 finale girati di segno
 
+
+REDNDERE SETUP UNA CLASSE
+rendere SPEED E SCALE UNA STRUCT
 */

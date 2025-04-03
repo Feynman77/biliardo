@@ -1,44 +1,40 @@
 #include "graphic.h"
 
-
-
-
 #include "ForwardDeclaration.h"
 
-// create a Tgui boxslider
+// creation of a Tgui boxslider
 auto createBoxSlider(const float& maximum, const float& minimum, const float& x,
                      const float& y) {
-  auto BoxSlider = tgui::EditBoxSlider::create(minimum, maximum);
-  BoxSlider->setPosition(x, y);
-  BoxSlider->setSize(200, 50);
-  BoxSlider->setValue((maximum - std::abs(minimum) / 2));
-  BoxSlider->setStep(0.01f);
-  BoxSlider->setDecimalPlaces(2);
-  BoxSlider->getSliderRenderer()->setThumbColor(tgui::Color::Cyan);
-  return BoxSlider;
+  auto boxSlider = tgui::EditBoxSlider::create(minimum, maximum);
+  boxSlider->setPosition(x, y);
+  boxSlider->setSize(200, 50);
+  boxSlider->setValue((maximum - std::abs(minimum) / 2));
+  boxSlider->setStep(0.01f);
+  boxSlider->setDecimalPlaces(2);
+  boxSlider->getSliderRenderer()->setThumbColor(tgui::Color::Cyan);
+  return boxSlider;
 }
 
-// create a Tgui button
+// creation of a Tgui button
 auto createButton(const float& x, const float& y, const char* name) {
-  auto Button = tgui::Button::create(name);
-  Button->setPosition(x, y);
-  Button->setSize(200, 50);
-  Button->setTextSize(15);
-  Button->getRenderer()->setBackgroundColor(tgui::Color::Green);
-  return Button;
+  auto button = tgui::Button::create(name);
+  button->setPosition(x, y);
+  button->setSize(200, 50);
+  button->setTextSize(15);
+  button->getRenderer()->setBackgroundColor(tgui::Color::Green);
+  return button;
 }
 
-// create a label
-//  Function to create a label with the given text and position
+// creation of a Tgui label
 auto createLabel(const std::string& text, const float& x, const float& y) {
   auto label = tgui::Label::create(text);
-  label->getRenderer()->setTextColor(
-      tgui::Color::White);   // Set text color to white
-  label->setPosition(x, y);  // Set the position
+  label->setPosition(x, y);
   label->setTextSize(15);
+  label->getRenderer()->setTextColor(tgui::Color::White);
   return label;
 }
 
+// creation of a Tgui editbox
 auto createEditBox(const std::string& text, const float& x, const float& y) {
   auto editbox = tgui::EditBox::create();
   editbox->setPosition(x, y);
@@ -49,7 +45,7 @@ auto createEditBox(const std::string& text, const float& x, const float& y) {
   return editbox;
 }
 
-// fill the TGui gui
+// filling the TGui gui
 void fillGui(tgui::Gui& gui) {
   // edit for motion
   gui.add(createBoxSlider(90, -90, 30, 550), "theta_0");
@@ -62,11 +58,11 @@ void fillGui(tgui::Gui& gui) {
   // edit for gaussian distribution
   gui.add(createBoxSlider(10, 0, 30, 30), "sigma y_0");
   gui.add(createBoxSlider(40, 0, 280, 30), "sigma theta_0");
-  gui.add(createBoxSlider(10000, 0, 30, 105), "n");
+  gui.add(createBoxSlider(1E9, 0, 30, 105), "n");
   gui.add(createButton(280, 105, "Normal distribution"), "gauss");
 
-  // Add labels for sliders
-  gui.add(createLabel("theta_0", 30, 550 - 25), "label_theta_0");
+  // adding sliders labels
+  gui.add(createLabel("Theta_0", 30, 550 - 25), "label_theta_0");
   gui.add(createLabel("r_1", 30, 650 - 25), "label_r_1");
   gui.add(createLabel("y_0", 280, 550 - 25), "label_y_0");
   gui.add(createLabel("r_2", 280, 650 - 25), "label_r_2");
@@ -89,7 +85,7 @@ void fillGui(tgui::Gui& gui) {
   gui.add(createEditBox("", 30.f, 405.f), "Position kurtosis");
   gui.add(createEditBox("", 280.f, 405.f), "Angle kurtosis");
 
-  // editbox labels
+  // adding editbox labels
   gui.add(createLabel("Final position mean", 30, 180 - 25), "label_p_mean");
   gui.add(createLabel("Final angle mean", 280, 180 - 25), "label_a_mean");
   gui.add(createLabel("Final position std dev", 30, 255 - 25),
@@ -104,6 +100,8 @@ void fillGui(tgui::Gui& gui) {
   gui.add(createLabel("Angle of incidence", 280, 850 - 25), "label_f_angle");
 }
 
+// make the drawable system
+// RIVEDEREEE
 void makeDrawableSystem(sf::CircleShape& ball, sf::VertexArray& top_line,
                         sf::VertexArray& bottom_line, const Setup& s,
                         const float& scale) {
@@ -125,9 +123,10 @@ void makeDrawableSystem(sf::CircleShape& ball, sf::VertexArray& top_line,
   ball.setOrigin(ball.getRadius(), ball.getRadius());
 }
 
+// setting the layout for the opening window
 void setWindow(sf::RenderWindow& window, sf::CircleShape& ball,
                sf::VertexArray& hor_line, sf::VertexArray& vert_line,
-               sf::Sprite& sprite) {
+               sf::Sprite& gauss_output_sprite) {
   ball.setFillColor(sf::Color::Black);
   ball.setOutlineColor(sf::Color::Black);
 
@@ -136,7 +135,7 @@ void setWindow(sf::RenderWindow& window, sf::CircleShape& ball,
   window.setView(view);
   window.setFramerateLimit(60);
 
-  // centering the window
+  // centering and setting the window
   sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
   float posX = (static_cast<float>(desktop.width) -
                 static_cast<float>(window.getSize().x)) /
@@ -144,25 +143,22 @@ void setWindow(sf::RenderWindow& window, sf::CircleShape& ball,
   float posY = (static_cast<float>(desktop.height) -
                 static_cast<float>(window.getSize().y) - 100.f) /
                2.f;
-
-  // Imposta la posizione della finestra
   window.setPosition(
       sf::Vector2i(static_cast<int>(posX), static_cast<int>(posY)));
 
-  // creation of horizontal and vertical line for layout
-
-  // creation horizontal line
+  // creation of horizontal line for layout
   hor_line[0].position = sf::Vector2f(-800, -228);
   hor_line[0].color = sf::Color::White;
   hor_line[1].position = sf::Vector2f(800, -228);
   hor_line[1].color = sf::Color::White;
 
-  // creation vertical line
+  // creation of vertical line for layout
   vert_line[0].position = sf::Vector2f(-50, -1000);
   vert_line[0].color = sf::Color::White;
   vert_line[1].position = sf::Vector2f(-50, 1000);
   vert_line[1].color = sf::Color::White;
 
-  sprite.setPosition(-50, -700);
-  sprite.setScale(1.23f, 1.0f);
+  // setting the position and dimension of the sprite
+  gauss_output_sprite.setPosition(-50, -700);
+  gauss_output_sprite.setScale(1.23f, 1.0f);
 }
