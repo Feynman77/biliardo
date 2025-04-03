@@ -7,17 +7,17 @@
 #include "TRandom.h"
 
 // creation of the setup from user
-Setup getParametersFromUser(const tgui::Gui &gui) {
-  Setup s;
-  s.r_1 = gui.get<tgui::EditBoxSlider>("r_1")->getValue();
-  s.r_2 = gui.get<tgui::EditBoxSlider>("r_2")->getValue();
-  s.l = gui.get<tgui::EditBoxSlider>("l")->getValue();
-  float y_0 = gui.get<tgui::EditBoxSlider>("y_0")->getValue();
-  float theta_0 = gui.get<tgui::EditBoxSlider>("theta_0")->getValue();
-  s.y_0 = -y_0;
-  s.theta_0 = -theta_0;
-  return s;
-}
+// Setup getParametersFromUser(const tgui::Gui &gui) {
+//   Setup s;
+//   s.r_1 = gui.get<tgui::EditBoxSlider>("r_1")->getValue();
+//   s.r_2 = gui.get<tgui::EditBoxSlider>("r_2")->getValue();
+//   s.l = gui.get<tgui::EditBoxSlider>("l")->getValue();
+//   float y_0 = gui.get<tgui::EditBoxSlider>("y_0")->getValue();
+//   float theta_0 = gui.get<tgui::EditBoxSlider>("theta_0")->getValue();
+//   s.y_0 = -y_0;
+//   s.theta_0 = -theta_0;
+//   return s;
+// }
 
 // calculate slope and q of a line from two point
 Line makeLineFromPoints(const Point &p_1, const Point &p_2) {
@@ -49,9 +49,9 @@ Point findInterception(const Line &l_1, const Line &l_2) {
 
 // making system from setup
 System makeSystemFromSetup(const Setup &s) {
-  Line top_line(makeLineFromPoints({0, s.r_1}, {s.l, s.r_2}));
-  Line bottom_line(makeLineFromPoints({0, -s.r_1}, {s.l, -s.r_2}));
-  Line first_throw(makeLineFromAngle(s.theta_0, s.y_0));
+  Line top_line(makeLineFromPoints({0, s.get_r_1()}, {s.get_l(), s.get_r_2()}));
+  Line bottom_line(makeLineFromPoints({0, -s.get_r_1()}, {s.get_l(), -s.get_r_2()}));
+  Line first_throw(makeLineFromAngle(s.get_theta_0(), s.get_y_0()));
   System system{top_line, bottom_line, first_throw};
   return system;
 }
@@ -329,22 +329,22 @@ void getNormalDistribution(const Setup &setup, tgui::Gui &gui) {
   int n = static_cast<int>(gui.get<tgui::EditBoxSlider>("n")->getValue());
 
   // creation of the histograms
-  TH1F h1("Isto1", "Final points", 20, -setup.r_2, setup.r_2);
+  TH1F h1("Isto1", "Final points", 20, -setup.get_r_2(), setup.get_r_2());
   TH1F h2("Isto2", "Final angles", 100, -M_PI, M_PI);
 
   // filling the histograms n times
   for (int i{0}; i < n; i++) {
     float theta =
-        static_cast<float>(gRandom->Gaus(setup.theta_0, sigma_theta_0));
-    float y = static_cast<float>(gRandom->Gaus(setup.y_0, sigma_y_0));
-    Setup setup_gaus{y, theta, setup.l, setup.r_1, setup.r_2};
+        static_cast<float>(gRandom->Gaus(setup.get_theta_0(), sigma_theta_0));
+    float y = static_cast<float>(gRandom->Gaus(setup.get_y_0(), sigma_y_0));
+    Setup setup_gaus{y, theta, setup.get_l(), setup.get_r_1(), setup.get_r_2()};
     System system(makeSystemFromSetup(setup_gaus));
 
     Point last_interception{0, 0};
-    Point new_interception{calculateFirstHit(setup_gaus.l, system)};
+    Point new_interception{calculateFirstHit(setup_gaus.get_l(), system)};
 
     calculateFinalPoint(new_interception, last_interception, system,
-                        setup_gaus.l, h1, h2);
+                        setup_gaus.get_l(), h1, h2);
   }
 
   // drowing histograms and final outputs on the Gui
@@ -378,11 +378,11 @@ void run(sf::CircleShape &ball, std::vector<Point> &positions,
          Speed_and_scale &speed_and_scale, tgui::Gui &gui,
          sf::VertexArray &top_line, sf::VertexArray &bottom_line) {
   positions.clear();
-  Setup setup = (getParametersFromUser(gui));
+  Setup setup = (gui);
 
   // rescaling speed and scale  in base  of the  higest parameter
   float scale_reference =
-      std::max({setup.l / 30, setup.r_1 / 8, setup.r_2 / 8});
+      std::max({setup.get_l() / 30, setup.get_r_1() / 8, setup.get_r_2() / 8});
   speed_and_scale.scale = 25 / scale_reference;
   speed_and_scale.speed = 1.5f * scale_reference;
   makeDrawableSystem(ball, top_line, bottom_line, setup, speed_and_scale.scale);
@@ -391,10 +391,10 @@ void run(sf::CircleShape &ball, std::vector<Point> &positions,
   System system(makeSystemFromSetup(setup));
 
   Point last_interception{0, 0};
-  Point new_interception{calculateFirstHit(setup.l, system)};
+  Point new_interception{calculateFirstHit(setup.get_l(), system)};
 
   Angle_and_point result =
-      getFinalPoint(new_interception, last_interception, system, setup.l,
+      getFinalPoint(new_interception, last_interception, system, setup.get_l(),
                     positions, speed_and_scale);
   if (result.y == 0 && result.theta == 180) {
     gui.get<tgui::EditBox>("Final angle")->setText("Invalid throw");
@@ -403,7 +403,7 @@ void run(sf::CircleShape &ball, std::vector<Point> &positions,
     gui.get<tgui::EditBox>("Final angle")
         ->setText(std::to_string(result.theta));
     gui.get<tgui::EditBox>("Final point")
-        ->setText(std::to_string(setup.l) + ";" + std::to_string(result.y));
+        ->setText(std::to_string(setup.get_l()) + ";" + std::to_string(result.y));
   }
 }
 

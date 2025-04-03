@@ -3,6 +3,7 @@
 #include <string>
 
 #include "ForwardDeclaration.h"
+#include "setup.h"
 
 int main() {
   // initial setting
@@ -10,7 +11,6 @@ int main() {
                           sf::Style::Titlebar | sf::Style::Close};
   tgui::Gui gui{window};
   fillGui(gui);
-  Setup setup;
   Speed_and_scale speed_and_scale{25, 2};
 
   // TODO uniformare la sintassi di inizializzazione (= vs {})
@@ -56,7 +56,8 @@ int main() {
 
     // press the button "Throw"
     if (throw_pressed == true) {
-      run(ball, animation_positions, speed_and_scale, gui, top_line,
+      Setup setup(gui);
+      setup.run(ball, animation_positions, speed_and_scale, gui, top_line,
           bottom_line);
       frame_index = 0;
       throw_pressed = false;
@@ -66,8 +67,8 @@ int main() {
     if (normal_distribution_pressed == true) {
       normal_distribution_pressed = false;
 
-      setup = getParametersFromUser(gui);
-      getNormalDistribution(setup, gui);
+      Setup setup(gui);
+      setup.getNormalDistribution(gui);
 
       gauss_output_texture.loadFromFile("histos.png");
       gauss_output_sprite.setTexture(gauss_output_texture);

@@ -106,20 +106,20 @@ void makeDrawableSystem(sf::CircleShape& ball, sf::VertexArray& top_line,
                         sf::VertexArray& bottom_line, const Setup& s,
                         const float& scale) {
   // creation of top line
-  top_line[0].position = sf::Vector2f(0, scale * s.r_1);
+  top_line[0].position = sf::Vector2f(0, scale * s::get_r_1());
   top_line[0].color = sf::Color::White;
-  top_line[1].position = sf::Vector2f(scale * s.l, scale * s.r_2);
+  top_line[1].position = sf::Vector2f(scale * s::get_l(), scale * s::get_r_2());
   top_line[1].color = sf::Color::White;
 
   // creation of the bottom line
-  bottom_line[0].position = sf::Vector2f(0, -scale * s.r_1);
+  bottom_line[0].position = sf::Vector2f(0, -scale * s::get_r_1());
   bottom_line[0].color = sf::Color::White;
-  bottom_line[1].position = sf::Vector2f(scale * s.l, -scale * s.r_2);
+  bottom_line[1].position = sf::Vector2f(scale * s::get_l(), -scale * s::get_r_2());
   bottom_line[1].color = sf::Color::White;
 
   // creation of the ball
   ball.setFillColor(sf::Color::Green);
-  ball.setPosition(0, scale * s.y_0);
+  ball.setPosition(0, scale * s::get_y_0());
   ball.setOrigin(ball.getRadius(), ball.getRadius());
 }
 

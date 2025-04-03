@@ -22,13 +22,13 @@ struct Speed_and_scale {
   float scale;
 };
 
-struct Setup {
-  float y_0;
-  float theta_0;
-  float l;
-  float r_1;
-  float r_2;
-};
+// struct Setup {
+//   float y_0;
+//   float theta_0;
+//   float l;
+//   float r_1;
+//   float r_2;
+// };
 
 struct System {
   Line top_line;
@@ -41,7 +41,7 @@ struct Angle_and_point {
   double y;
 };
 
-Setup getParametersFromUser(const tgui::Gui &gui);
+//Setup getParametersFromUser(const tgui::Gui &gui);
 
 Line makeLineFromPoints(const Point &p_1, const Point &p_2);
 
@@ -49,7 +49,7 @@ Line makeLineFromAngle(const double &theta, const double &q);
 
 Point findInterception(const Line &l_1, const Line &l_2);
 
-System makeSystemFromSetup(const Setup &s);
+// System makeSystemFromSetup(const Setup &s);
 
 Point calculateFirstHit(const double &l, const System &system);
 
@@ -66,11 +66,11 @@ void calculateFinalPoint(Point &new_interception, Point &last_interception,
                          const System &system, const double &l, TH1F &h1,
                          TH1F &h2);
 
-void getNormalDistribution(const Setup &setup, tgui::Gui &gui);
+//void getNormalDistribution(const Setup &setup, tgui::Gui &gui);
 
-void run(sf::CircleShape &ball, std::vector<Point> &positions,
-         Speed_and_scale &speed_and_scale, tgui::Gui &gui,
-         sf::VertexArray &top_line, sf::VertexArray &bottom_line);
+// void run(sf::CircleShape &ball, std::vector<Point> &positions,
+//          Speed_and_scale &speed_and_scale, tgui::Gui &gui,
+//          sf::VertexArray &top_line, sf::VertexArray &bottom_line);
 
 void sliderUpdate(tgui::Gui &gui);
 #endif

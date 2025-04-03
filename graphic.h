@@ -9,8 +9,8 @@
 #include <TGUI/Widgets/EditBoxSlider.hpp>
 #include <TGUI/Widgets/Panel.hpp>
 #include <TGUI/Widgets/Picture.hpp>
-
-struct Setup;
+#include "setup.h"
+//struct Setup;
 
 void setWindow(sf::RenderWindow& window, sf::CircleShape& ball,
                sf::VertexArray& hor_line, sf::VertexArray& vert_line,
