@@ -5,51 +5,49 @@
 
 #include <cmath>
 #include <vector>
-
+#include "structs.h"
 #include "graphic.h"
 
-struct Line {
-  double slope;
-  double q;
-};
-struct Point {
-  double x;
-  double y;
-};
-
-struct Speed_and_scale {
-  float speed;
-  float scale;
-};
-
-// struct Setup {
-//   float y_0;
-//   float theta_0;
-//   float l;
-//   float r_1;
-//   float r_2;
+// struct Line {
+//   double slope;
+//   double q;
+// };
+// struct Point {
+//   double x;
+//   double y;
 // };
 
-struct System {
-  Line top_line;
-  Line bottom_line;
-  Line first_throw;
-};
+// struct Speed_and_scale {
+//   float speed;
+//   float scale;
+// };
 
-struct Angle_and_point {
-  double theta;
-  double y;
-};
+// // struct Setup {
+// //   float y_0;
+// //   float theta_0;
+// //   float l;
+// //   float r_1;
+// //   float r_2;
+// // };
 
-//Setup getParametersFromUser(const tgui::Gui &gui);
+// struct System {
+//   Line top_line;
+//   Line bottom_line;
+//   Line first_throw;
+// };
 
-Line makeLineFromPoints(const Point &p_1, const Point &p_2);
+// struct Angle_and_point {
+//   double theta;
+//   double y;
+// };
 
-Line makeLineFromAngle(const double &theta, const double &q);
+// //Setup getParametersFromUser(const tgui::Gui &gui);
+
+// Line makeLineFromPoints(const Point &p_1, const Point &p_2);
+
+// Line makeLineFromAngle(const double &theta, const double &q);
 
 Point findInterception(const Line &l_1, const Line &l_2);
-
-// System makeSystemFromSetup(const Setup &s);
 
 Point calculateFirstHit(const double &l, const System &system);
 

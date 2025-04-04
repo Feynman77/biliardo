@@ -9,7 +9,6 @@
 #include <TGUI/Widgets/EditBoxSlider.hpp>
 #include <TGUI/Widgets/Panel.hpp>
 #include <TGUI/Widgets/Picture.hpp>
-#include "setup.h"
 //struct Setup;
 
 void setWindow(sf::RenderWindow& window, sf::CircleShape& ball,
@@ -27,8 +26,6 @@ auto createEditBox(const std::string& text, const float& x, const float& y);
 
 void fillGui(tgui::Gui& gui);
 
-void makeDrawableSystem(sf::CircleShape& ball, sf::VertexArray& top_line,
-                        sf::VertexArray& bottom_line, const Setup& s,
-                        const float& scale);
+
 
 #endif

@@ -20,44 +20,52 @@
 // }
 
 // calculate slope and q of a line from two point
-Line makeLineFromPoints(const Point &p_1, const Point &p_2) {
-  double slope{(p_2.y - p_1.y) / (p_2.x - p_1.x)};
-  double q{p_1.y - slope * p_1.x};
-  return Line{slope, q};
-}
+// Line makeLineFromPoints(const Point &p_1, const Point &p_2)
+// {
+//   double slope{(p_2.y - p_1.y) / (p_2.x - p_1.x)};
+//   double q{p_1.y - slope * p_1.x};
+//   return Line{slope, q};
+// }
 
-// calculate of slope and q of a line from an angle
-Line makeLineFromAngle(const double &theta, const double &q) {
-  double slope{tan(theta * M_PI / 180)};
-  return Line{slope, q};
-}
+// // calculate of slope and q of a line from an angle
+// Line makeLineFromAngle(const double &theta, const double &q)
+// {
+//   double slope{tan(theta * M_PI / 180)};
+//   return Line{slope, q};
+// }
 
 // find the interception beetween two lines
-Point findInterception(const Line &l_1, const Line &l_2) {
-  if (l_1.slope != l_2.slope) {
+Point findInterception(const Line &l_1, const Line &l_2)
+{
+  if (l_1.slope != l_2.slope)
+  {
     double abscissa{(l_2.q - l_1.q) / (l_1.slope - l_2.slope)};
     double ordinate{l_1.slope * abscissa + l_1.q};
     Point p;
     p.x = abscissa;
     p.y = ordinate;
     return p;
-  } else {
-    Point p{-1, 0};  // x that gets discarded by main
+  }
+  else
+  {
+    Point p{-1, 0}; // x that gets discarded by main
     return p;
   }
 }
 
 // making system from setup
-System makeSystemFromSetup(const Setup &s) {
-  Line top_line(makeLineFromPoints({0, s.get_r_1()}, {s.get_l(), s.get_r_2()}));
-  Line bottom_line(makeLineFromPoints({0, -s.get_r_1()}, {s.get_l(), -s.get_r_2()}));
-  Line first_throw(makeLineFromAngle(s.get_theta_0(), s.get_y_0()));
-  System system{top_line, bottom_line, first_throw};
-  return system;
-}
+// System makeSystemFromSetup(const Setup &s)
+// {
+//   Line top_line(makeLineFromPoints({0, s.get_r_1()}, {s.get_l(), s.get_r_2()}));
+//   Line bottom_line(makeLineFromPoints({0, -s.get_r_1()}, {s.get_l(), -s.get_r_2()}));
+//   Line first_throw(makeLineFromAngle(s.get_theta_0(), s.get_y_0()));
+//   System system{top_line, bottom_line, first_throw};
+//   return system;
+// }
 
 // calculate of the first hit
-Point calculateFirstHit(const double &l, const System &system) {
+Point calculateFirstHit(const double &l, const System &system)
+{
   // defining logical points
   Point new_interception;
   Point interception_top_line{
@@ -66,12 +74,14 @@ Point calculateFirstHit(const double &l, const System &system) {
       findInterception(system.bottom_line, system.first_throw)};
 
   // ball hits top line
-  if (interception_top_line.x >= 0 && interception_top_line.x <= l) {
+  if (interception_top_line.x >= 0 && interception_top_line.x <= l)
+  {
     new_interception = interception_top_line;
   };
 
   // ball hits bottom line
-  if (interception_bottom_line.x >= 0 && interception_bottom_line.x <= l) {
+  if (interception_bottom_line.x >= 0 && interception_bottom_line.x <= l)
+  {
     new_interception = interception_bottom_line;
   };
 
@@ -79,7 +89,8 @@ Point calculateFirstHit(const double &l, const System &system) {
   if ((interception_top_line.x > l && interception_bottom_line.x < 0) ||
       (interception_bottom_line.x > l && interception_top_line.x < 0) ||
       (interception_top_line.x > l && interception_bottom_line.x > l) ||
-      (interception_top_line.x < 0 && interception_bottom_line.x < 0)) {
+      (interception_top_line.x < 0 && interception_bottom_line.x < 0))
+  {
     double result{system.first_throw.slope * l + system.first_throw.q};
     new_interception.x = l;
     new_interception.y = result;
@@ -91,10 +102,13 @@ Point calculateFirstHit(const double &l, const System &system) {
 // filling the vector with the positions of the motion
 void fillVector(std::vector<Point> &positions, const Point &last_interception,
                 const Point &new_interception, const Line &path,
-                const Speed_and_scale &speed_and_scale, const double &l) {
+                const Speed_and_scale &speed_and_scale, const double &l)
+{
   int i{0};
-  if (last_interception.x < new_interception.x) {
-    do {
+  if (last_interception.x < new_interception.x)
+  {
+    do
+    {
       double x{last_interception.x +
                static_cast<float>(i) * (speed_and_scale.speed / 30.f) * cos(atan(path.slope))};
       Point position{speed_and_scale.scale * x,
@@ -106,8 +120,11 @@ void fillVector(std::vector<Point> &positions, const Point &last_interception,
     } while (
         (positions.back().x <= speed_and_scale.scale * new_interception.x) &&
         (positions.back().x <= speed_and_scale.scale * l));
-  } else {
-    do {
+  }
+  else
+  {
+    do
+    {
       double x{last_interception.x -
                static_cast<float>(i) * (speed_and_scale.speed / 30.f) * cos(atan(path.slope))};
       Point position{speed_and_scale.scale * x,
@@ -126,16 +143,18 @@ void fillVector(std::vector<Point> &positions, const Point &last_interception,
 Angle_and_point getFinalPoint(Point &new_interception, Point &last_interception,
                               const System &system, const double &l,
                               std::vector<Point> &positions,
-                              const Speed_and_scale &speed_and_scale) {
+                              const Speed_and_scale &speed_and_scale)
+{
   // setting the initial situation
-  Line path{system.first_throw.slope, system.first_throw.q};
+  Line path(system.first_throw.slope, system.first_throw.q);
   Angle_and_point p;
 
   // ball start bouncing
-  while (last_interception.x <= new_interception.x) {
+  while (last_interception.x <= new_interception.x)
+  {
     // valid final throw (give us the result)
-    if (new_interception.x >= l) {
-      // PROBLEM
+    if (new_interception.x >= l)
+    {
       fillVector(positions, last_interception, new_interception, path,
                  speed_and_scale, l);
 
@@ -152,7 +171,8 @@ Angle_and_point getFinalPoint(Point &new_interception, Point &last_interception,
 
     // ball hits top line
     if (new_interception.x < l && new_interception.x >= 0 &&
-        new_interception.y > 0) {
+        new_interception.y > 0)
+    {
       fillVector(positions, last_interception, new_interception, path,
                  speed_and_scale, l);
 
@@ -166,12 +186,12 @@ Angle_and_point getFinalPoint(Point &new_interception, Point &last_interception,
 
       last_interception = new_interception;
       new_interception = findInterception(path, system.bottom_line);
-      continue;
     };
 
     // ball hits bottom line
     if (new_interception.x < l && new_interception.x >= 0 &&
-        new_interception.y < 0) {
+        new_interception.y < 0)
+    {
       fillVector(positions, last_interception, new_interception, path,
                  speed_and_scale, l);
 
@@ -187,18 +207,19 @@ Angle_and_point getFinalPoint(Point &new_interception, Point &last_interception,
 
       last_interception = new_interception;
       new_interception = findInterception(path, system.top_line);
-      continue;
+
     };
 
     // valide case with divergent lines
     if ((system.top_line.slope > system.bottom_line.slope) &&
-        (new_interception.x < 0)) {
-      new_interception.y = path.slope * l * path.q;
+        (new_interception.x < 0))
+    {
+      new_interception.y = path.slope * l + path.q;
       new_interception.x = l;
       fillVector(positions, last_interception, new_interception, path,
                  speed_and_scale, l);
 
-      double result{path.slope * l + path.q};  // wrong sign for a reason
+      double result{path.slope * l + path.q}; // wrong sign for a reason
       double final_angle{atan(path.slope)};
 
       p.theta = -final_angle * 180 / M_PI;
@@ -207,12 +228,15 @@ Angle_and_point getFinalPoint(Point &new_interception, Point &last_interception,
     };
   }
   // ball goes back
-  if (new_interception.x < last_interception.x) {
+  if (new_interception.x < last_interception.x)
+  {
     while (last_interception.x >= new_interception.x &&
-           last_interception.x > 0) {
+           last_interception.x > 0)
+    {
       // ball hits top line
       if (new_interception.x < l && new_interception.y > 0 &&
-          last_interception.x >= 0) {
+          last_interception.x >= 0)
+      {
         // finding path after the hit of the ball with the top line
         fillVector(positions, last_interception, new_interception, path,
                    speed_and_scale, l);
@@ -229,7 +253,8 @@ Angle_and_point getFinalPoint(Point &new_interception, Point &last_interception,
 
       // ball hits bottom line
       if (new_interception.x < l && new_interception.y < 0 &&
-          last_interception.x >= 0) {
+          last_interception.x >= 0)
+      {
         fillVector(positions, last_interception, new_interception, path,
                    speed_and_scale, l);
         // finding the path after hitting the bottom line
@@ -255,13 +280,16 @@ Angle_and_point getFinalPoint(Point &new_interception, Point &last_interception,
 // calculation of the final point and filling the histograms
 void calculateFinalPoint(Point &new_interception, Point &last_interception,
                          const System &system, const double &l, TH1F &h1,
-                         TH1F &h2) {
-  Line path{system.first_throw.slope, system.first_throw.q};
+                         TH1F &h2)
+{
+  Line path(system.first_throw.slope, system.first_throw.q);
 
   // ball starts bouncing
-  while (last_interception.x <= new_interception.x) {
+  while (last_interception.x <= new_interception.x)
+  {
     // valid throw final path
-    if (new_interception.x >= l) {
+    if (new_interception.x >= l)
+    {
       double result{-(path.slope * l + path.q)};
       double final_angle{-atan(path.slope)};
       h1.Fill(result);
@@ -271,7 +299,8 @@ void calculateFinalPoint(Point &new_interception, Point &last_interception,
 
     // ball hits top line
     if (new_interception.x < l && new_interception.x >= 0 &&
-        new_interception.y > 0) {
+        new_interception.y > 0)
+    {
       // finding the path after hitting the top line
       path.slope =
           ((path.slope * system.top_line.slope * system.top_line.slope -
@@ -286,7 +315,8 @@ void calculateFinalPoint(Point &new_interception, Point &last_interception,
 
     // ball hits bottom line
     if (new_interception.x < l && new_interception.x >= 0 &&
-        new_interception.y < 0) {
+        new_interception.y < 0)
+    {
       // finding the path after hitting the bottom line
       path.slope = (-path.slope);
       path.slope =
@@ -303,10 +333,11 @@ void calculateFinalPoint(Point &new_interception, Point &last_interception,
 
     // divergent lines
     if ((system.top_line.slope > system.bottom_line.slope) &&
-        (new_interception.x < 0)) {
+        (new_interception.x < 0))
+    {
       new_interception.y = path.slope * l + path.q;
       new_interception.x = l;
-      double result{path.slope * l + path.q};  // wrong sign for a reason
+      double result{path.slope * l + path.q}; // wrong sign for a reason
       double final_angle{atan(path.slope)};
       h1.Fill(result);
       h2.Fill(final_angle);
@@ -314,14 +345,16 @@ void calculateFinalPoint(Point &new_interception, Point &last_interception,
     };
 
     // ball goes back
-    if (new_interception.x < last_interception.x) {
+    if (new_interception.x < last_interception.x)
+    {
       break;
     };
   }
 }
 
 // drowing the histograms of the normal distributions
-void getNormalDistribution(const Setup &setup, tgui::Gui &gui) {
+void getNormalDistribution(const Setup &setup, tgui::Gui &gui)
+{
   // defining the inputs from the sliders
   float sigma_y_0 = gui.get<tgui::EditBoxSlider>("sigma y_0")->getValue();
   float sigma_theta_0 =
@@ -333,12 +366,13 @@ void getNormalDistribution(const Setup &setup, tgui::Gui &gui) {
   TH1F h2("Isto2", "Final angles", 100, -M_PI, M_PI);
 
   // filling the histograms n times
-  for (int i{0}; i < n; i++) {
+  for (int i{0}; i < n; i++)
+  {
     float theta =
         static_cast<float>(gRandom->Gaus(setup.get_theta_0(), sigma_theta_0));
     float y = static_cast<float>(gRandom->Gaus(setup.get_y_0(), sigma_y_0));
     Setup setup_gaus{y, theta, setup.get_l(), setup.get_r_1(), setup.get_r_2()};
-    System system(makeSystemFromSetup(setup_gaus));
+    System system(setup_gaus);
 
     Point last_interception{0, 0};
     Point new_interception{calculateFirstHit(setup_gaus.get_l(), system)};
@@ -376,7 +410,8 @@ void getNormalDistribution(const Setup &setup, tgui::Gui &gui) {
 // running the program
 void run(sf::CircleShape &ball, std::vector<Point> &positions,
          Speed_and_scale &speed_and_scale, tgui::Gui &gui,
-         sf::VertexArray &top_line, sf::VertexArray &bottom_line) {
+         sf::VertexArray &top_line, sf::VertexArray &bottom_line)
+{
   positions.clear();
   Setup setup = (gui);
 
@@ -385,10 +420,10 @@ void run(sf::CircleShape &ball, std::vector<Point> &positions,
       std::max({setup.get_l() / 30, setup.get_r_1() / 8, setup.get_r_2() / 8});
   speed_and_scale.scale = 25 / scale_reference;
   speed_and_scale.speed = 1.5f * scale_reference;
-  makeDrawableSystem(ball, top_line, bottom_line, setup, speed_and_scale.scale);
+  setup.makeDrawableSystem(ball, top_line, bottom_line, speed_and_scale.scale);
 
   // FIXME Perché non è un costruttore??
-  System system(makeSystemFromSetup(setup));
+  System system(setup);
 
   Point last_interception{0, 0};
   Point new_interception{calculateFirstHit(setup.get_l(), system)};
@@ -396,10 +431,13 @@ void run(sf::CircleShape &ball, std::vector<Point> &positions,
   Angle_and_point result =
       getFinalPoint(new_interception, last_interception, system, setup.get_l(),
                     positions, speed_and_scale);
-  if (result.y == 0 && result.theta == 180) {
+  if (result.y == 0 && result.theta == 180)
+  {
     gui.get<tgui::EditBox>("Final angle")->setText("Invalid throw");
     gui.get<tgui::EditBox>("Final point")->setText("Invalid throw");
-  } else {
+  }
+  else
+  {
     gui.get<tgui::EditBox>("Final angle")
         ->setText(std::to_string(result.theta));
     gui.get<tgui::EditBox>("Final point")
@@ -408,7 +446,8 @@ void run(sf::CircleShape &ball, std::vector<Point> &positions,
 }
 
 // setting the valid physical range for y_0 values
-void sliderUpdate(tgui::Gui &gui) {
+void sliderUpdate(tgui::Gui &gui)
+{
   float r_1 = gui.get<tgui::EditBoxSlider>("r_1")->getValue();
   gui.get<tgui::EditBoxSlider>("y_0")->setMaximum(r_1 - 0.01f);
   gui.get<tgui::EditBoxSlider>("y_0")->setMinimum(-r_1 + 0.01f);

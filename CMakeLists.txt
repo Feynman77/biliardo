@@ -41,8 +41,8 @@ if (BUILD_TESTING)
 
   # aggiungi l'eseguibile all.t
   add_executable(biliardo_test test.cpp functionDefinitions.cpp graphic.cpp setup.cpp)
-  target_link_libraries(biliardo_test PRIVATE  sfml-graphics sfml-window sfml-system tgui ROOT::Hist ROOT::Gpad)
-  # aggiungi l'eseguibile all.t alla lista dei test
+ target_link_libraries(biliardo_test PRIVATE  sfml-graphics sfml-window sfml-system tgui ROOT::Hist ROOT::Gpad)
+  # # aggiungi l'eseguibile all.t alla lista dei test
   add_test(NAME biliardo_test COMMAND biliardo_test)
 
 endif()
