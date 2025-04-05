@@ -80,7 +80,7 @@ struct System
   System(const Setup &s)
       : top_line({0, s.get_r_1()}, {s.get_l(), s.get_r_2()}),
         bottom_line({0, -s.get_r_1()}, {s.get_l(), -s.get_r_2()}),
-        first_throw(Angle_and_point {s.get_theta_0(), s.get_y_0()}) {}
+        first_throw(Angle_and_point{s.get_theta_0(), s.get_y_0()}) {}
 };
 
 #endif

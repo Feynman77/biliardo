@@ -37,7 +37,7 @@ TEST_CASE("Test findInterception") {
 TEST_CASE("Test calculateFirstHit") {
   SUBCASE("No line") {
     double l = 4;
-    Setup s{3, -23.2f, 4, 4, 2};
+    Setup s(-3, 23.2f, 4, 4, 2);
     System system(s);
     Point result = calculateFirstHit(l, system);
     CHECK(result.x == doctest::Approx(4).epsilon(0.01));
@@ -45,7 +45,8 @@ TEST_CASE("Test calculateFirstHit") {
   }
   SUBCASE("Hit top line") {
     double l = 6;
-    Setup s{-1, -56.31f, 6, 4, 3};
+    Setup s(1, 56.31f, 6, 4, 3);
+    std::cout << s.get_y_0();
     System system(s);
     Point result = calculateFirstHit(l, system);
     CHECK(result.x == doctest::Approx(1.8).epsilon(0.01));
@@ -53,7 +54,7 @@ TEST_CASE("Test calculateFirstHit") {
   }
   SUBCASE("Hit bottom line") {
     double l = 10;
-    Setup s{1, 20.03f, 10, 4, 2.5};
+    Setup s(-1, -20.03f, 10, 4, 2.5);
     System system(s);
     Point result = calculateFirstHit(l, system);
     CHECK(result.x == doctest::Approx(5.83).epsilon(0.01));

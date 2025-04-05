@@ -14,18 +14,18 @@ Setup::Setup(const tgui::Gui &gui)
       m_r_2(gui.get<tgui::EditBoxSlider>("r_2")->getValue()) {}
 
 Setup::Setup(const float &y_0, const float &theta_0, const float &l,
-             const float &r_1, const float &r_2) {
-    m_y_0 = -y_0;
-    m_theta_0 = -theta_0;
-    m_l = l;
-    m_r_1 = r_1;
-    m_r_2 = r_2;
-  }
-
+             const float &r_1, const float &r_2) : m_y_0(-y_0),
+                                                   m_theta_0(-theta_0),
+                                                   m_l(l),
+                                                   m_r_1(r_1),
+                                                   m_r_2(r_2)
+{
+}
 
 void Setup::run(sf::CircleShape &ball, std::vector<Point> &positions,
                 Speed_and_scale &speed_and_scale, tgui::Gui &gui,
-                sf::VertexArray &top_line, sf::VertexArray &bottom_line) {
+                sf::VertexArray &top_line, sf::VertexArray &bottom_line)
+{
   positions.clear();
 
   // rescaling speed and scale  in base  of the  higest parameter
@@ -42,10 +42,13 @@ void Setup::run(sf::CircleShape &ball, std::vector<Point> &positions,
   Angle_and_point result =
       getFinalPoint(new_interception, last_interception, system, m_l, positions,
                     speed_and_scale);
-  if (result.y == 0 && result.theta == 180) {
+  if (result.y == 0 && result.theta == 180)
+  {
     gui.get<tgui::EditBox>("Final angle")->setText("Invalid throw");
     gui.get<tgui::EditBox>("Final point")->setText("Invalid throw");
-  } else {
+  }
+  else
+  {
     gui.get<tgui::EditBox>("Final angle")
         ->setText(std::to_string(result.theta));
     gui.get<tgui::EditBox>("Final point")
@@ -53,7 +56,8 @@ void Setup::run(sf::CircleShape &ball, std::vector<Point> &positions,
   }
 }
 
-void Setup::getNormalDistribution(tgui::Gui &gui) {
+void Setup::getNormalDistribution(tgui::Gui &gui)
+{
   // defining the inputs from the sliders
   float sigma_y_0 = gui.get<tgui::EditBoxSlider>("sigma y_0")->getValue();
   float sigma_theta_0 =
@@ -65,7 +69,8 @@ void Setup::getNormalDistribution(tgui::Gui &gui) {
   TH1F h2("Isto2", "Final angles", 100, -M_PI, M_PI);
 
   // filling the histograms n times
-  for (int i{0}; i < n; i++) {
+  for (int i{0}; i < n; i++)
+  {
     float theta = static_cast<float>(gRandom->Gaus(m_theta_0, sigma_theta_0));
     float y = static_cast<float>(gRandom->Gaus(m_y_0, sigma_y_0));
     Setup setup_gaus{y, theta, m_l, m_r_1, m_r_2};
@@ -106,7 +111,8 @@ void Setup::getNormalDistribution(tgui::Gui &gui) {
 
 void Setup::makeDrawableSystem(sf::CircleShape &ball, sf::VertexArray &top_line,
                                sf::VertexArray &bottom_line,
-                               const float &scale) {
+                               const float &scale)
+{
   // creation of top line
   Setup s = *this;
   top_line[0].position = sf::Vector2f(0, scale * s.get_r_1());
@@ -122,7 +128,7 @@ void Setup::makeDrawableSystem(sf::CircleShape &ball, sf::VertexArray &top_line,
   bottom_line[1].color = sf::Color::White;
 
   // creation of the ball
-  
+
   ball.setPosition(0, scale * s.get_y_0());
   ball.setFillColor(sf::Color::Green);
   ball.setOrigin(ball.getRadius(), ball.getRadius());
