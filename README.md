@@ -20,10 +20,14 @@ SFML, TGui, Root
 
 ### Esecuzione
 
-* How to run the program
-* Step-by-step bullets
+A seguito dell'installazione, basterà utilizzare sul terminale i seguenti comandi in sequenza:
 ```
-code blocks for commands
+cd biliardo
+mkdir build
+cmake -S . -B build
+cmake --build build
+cd build
+.\biliardo
 ```
 
 ## Autori
