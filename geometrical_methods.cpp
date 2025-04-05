@@ -1,38 +1,11 @@
 
+#include "geometrical_methods.h"
+
 #include <TH1F.h>
 
 #include <string>
 
-#include "ForwardDeclaration.h"
 #include "TRandom.h"
-
-// creation of the setup from user
-// Setup getParametersFromUser(const tgui::Gui &gui) {
-//   Setup s;
-//   s.r_1 = gui.get<tgui::EditBoxSlider>("r_1")->getValue();
-//   s.r_2 = gui.get<tgui::EditBoxSlider>("r_2")->getValue();
-//   s.l = gui.get<tgui::EditBoxSlider>("l")->getValue();
-//   float y_0 = gui.get<tgui::EditBoxSlider>("y_0")->getValue();
-//   float theta_0 = gui.get<tgui::EditBoxSlider>("theta_0")->getValue();
-//   s.y_0 = -y_0;
-//   s.theta_0 = -theta_0;
-//   return s;
-// }
-
-// calculate slope and q of a line from two point
-// Line makeLineFromPoints(const Point &p_1, const Point &p_2)
-// {
-//   double slope{(p_2.y - p_1.y) / (p_2.x - p_1.x)};
-//   double q{p_1.y - slope * p_1.x};
-//   return Line{slope, q};
-// }
-
-// // calculate of slope and q of a line from an angle
-// Line makeLineFromAngle(const double &theta, const double &q)
-// {
-//   double slope{tan(theta * M_PI / 180)};
-//   return Line{slope, q};
-// }
 
 // finding the interception beetween two lines
 Point findInterception(const Line &l_1, const Line &l_2) {
@@ -49,16 +22,6 @@ Point findInterception(const Line &l_1, const Line &l_2) {
     return p;
   }
 }
-
-// making system from setup
-// System makeSystemFromSetup(const Setup &s)
-// {
-//   Line top_line(makeLineFromPoints({0, s.get_r_1()}, {s.get_l(),
-//   s.get_r_2()})); Line bottom_line(makeLineFromPoints({0, -s.get_r_1()},
-//   {s.get_l(), -s.get_r_2()})); Line
-//   first_throw(makeLineFromAngle(s.get_theta_0(), s.get_y_0())); System
-//   system{top_line, bottom_line, first_throw}; return system;
-// }
 
 // calculate of the first hit
 Point calculateFirstHit(const double &l, const System &system) {
@@ -93,14 +56,15 @@ Point calculateFirstHit(const double &l, const System &system) {
 }
 
 // filling the vector with the positions of the motion
-// FORSE COMMENTARE ALTRE COSE
 void fillVector(std::vector<Point> &animation_positions,
                 const Point &last_interception, const Point &new_interception,
                 const Line &path, const Speed_and_scale &speed_and_scale,
                 const double &l) {
   int i{0};
   if (last_interception.x < new_interception.x) {
+    // it has to do at least one iteration to work
     do {
+      // generate a position for every frame
       double x{last_interception.x + static_cast<float>(i) *
                                          (speed_and_scale.speed / 30.f) *
                                          cos(atan(path.slope))};
@@ -114,6 +78,7 @@ void fillVector(std::vector<Point> &animation_positions,
               speed_and_scale.scale * new_interception.x) &&
              (animation_positions.back().x <= speed_and_scale.scale * l));
   } else {
+    // same idea, different formula because it moves backwards
     do {
       double x{last_interception.x - static_cast<float>(i) *
                                          (speed_and_scale.speed / 30.f) *
@@ -149,7 +114,7 @@ Angle_and_point getFinalPoint(Point &new_interception, Point &last_interception,
 
       // calculate the final informations
       // wrong sign but there is a reason ( we do  the calculations on the
-      // flipped system because sfml is flipped)
+      // flipped system because sfml's ordinate is flipped)
       double result{path.slope * l + path.q};
       double final_angle{atan(path.slope)};
 
@@ -158,7 +123,7 @@ Angle_and_point getFinalPoint(Point &new_interception, Point &last_interception,
       break;
     };
 
-    // ball hits top line
+    // ball hits (sfml's) top line
     if (new_interception.x < l && new_interception.x >= 0 &&
         new_interception.y > 0) {
       fillVector(animation_positions, last_interception, new_interception, path,
@@ -176,7 +141,7 @@ Angle_and_point getFinalPoint(Point &new_interception, Point &last_interception,
       new_interception = findInterception(path, system.bottom_line);
     };
 
-    // ball hits bottom line
+    // ball hits (sfml's) bottom line
     if (new_interception.x < l && new_interception.x >= 0 &&
         new_interception.y < 0) {
       fillVector(animation_positions, last_interception, new_interception, path,
@@ -204,7 +169,8 @@ Angle_and_point getFinalPoint(Point &new_interception, Point &last_interception,
       fillVector(animation_positions, last_interception, new_interception, path,
                  speed_and_scale, l);
 
-      double result{path.slope * l + path.q};  // wrong sign for a reason
+      double result{path.slope * l +
+                    path.q};  // wrong sign for same reason as before
       double final_angle{atan(path.slope)};
 
       p.theta = -final_angle * 180 / M_PI;
@@ -217,7 +183,7 @@ Angle_and_point getFinalPoint(Point &new_interception, Point &last_interception,
   if (new_interception.x < last_interception.x) {
     while (last_interception.x >= new_interception.x &&
            last_interception.x > 0) {
-      // ball hits top line
+      // ball hits (sfml's) top line
       if (new_interception.x < l && new_interception.y > 0 &&
           last_interception.x >= 0) {
         // finding path after the hit of the ball with the top line
@@ -234,7 +200,7 @@ Angle_and_point getFinalPoint(Point &new_interception, Point &last_interception,
         new_interception = findInterception(path, system.bottom_line);
       };
 
-      // ball hits bottom line
+      // ball hits (sfml's)bottom line
       if (new_interception.x < l && new_interception.y < 0 &&
           last_interception.x >= 0) {
         fillVector(animation_positions, last_interception, new_interception,
@@ -260,7 +226,7 @@ Angle_and_point getFinalPoint(Point &new_interception, Point &last_interception,
 }
 
 // calculation of the final point and filling the histograms
-void calculateFinalPoint(Point &new_interception, Point &last_interception,
+void nThrowsSimulation(Point &new_interception, Point &last_interception,
                          const System &system, const double &l, TH1F &h1,
                          TH1F &h2) {
   Line path(static_cast<float>(system.first_throw.slope),
@@ -272,6 +238,7 @@ void calculateFinalPoint(Point &new_interception, Point &last_interception,
     if (new_interception.x >= l) {
       double result{(path.slope * l + path.q)};
       double final_angle{atan(path.slope) * 180 / M_PI};
+      // filling the histograms
       h1.Fill(result);
       h2.Fill(final_angle);
       break;
@@ -316,6 +283,7 @@ void calculateFinalPoint(Point &new_interception, Point &last_interception,
       new_interception.x = l;
       double result{path.slope * l + path.q};
       double final_angle{atan(path.slope) * 180 / M_PI};
+      // filling the histograms
       h1.Fill(result);
       h2.Fill(final_angle);
       break;

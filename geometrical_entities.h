@@ -1,5 +1,5 @@
-#ifndef STRUCTS_H
-#define STRUCTS_H
+#ifndef GEOMETRICAL_ENTITIES_H
+#define GEOMETRICAL_ENTITIES_H
 #include <TGUI/Backend/SFML-Graphics.hpp>
 #include <TGUI/TGUI.hpp>
 #include <cmath>
@@ -37,6 +37,8 @@ class Setup {
   float m_r_2;
 
  public:
+  // constructor overload
+
   Setup(const tgui::Gui &gui);
 
   Setup(const float &y_0, const float &theta_0, const float &l,
@@ -62,6 +64,8 @@ struct System {
   Line top_line;
   Line bottom_line;
   Line first_throw;
+
+  // constructor overload
 
   System(Line top_line_input, Line bottom_line_input, Line first_throw_input)
       : top_line(top_line_input),

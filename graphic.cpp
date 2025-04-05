@@ -1,6 +1,6 @@
 #include "graphic.h"
 
-#include "ForwardDeclaration.h"
+#include "geometrical_methods.h"
 
 // creation of a Tgui boxslider
 auto createBoxSlider(const float& maximum, const float& minimum, const float& x,
@@ -55,7 +55,7 @@ void fillGui(tgui::Gui& gui) {
   gui.add(createBoxSlider(1000, 0, 30, 750), "l");
   gui.add(createButton(280, 750, "Throw"), "run");
 
-  // edit for gaussian distribution
+  // edit for normal distribution
   gui.add(createBoxSlider(10, 0, 30, 30), "sigma y_0");
   gui.add(createBoxSlider(40, 0, 280, 30), "sigma theta_0");
   gui.add(createBoxSlider(1E6, 0, 30, 105), "n");

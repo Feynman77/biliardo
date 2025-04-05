@@ -2,9 +2,9 @@
 #include <SFML/System/Clock.hpp>
 #include <string>
 
-#include "ForwardDeclaration.h"
+#include "geometrical_entities.h"
+#include "geometrical_methods.h"
 #include "graphic.h"
-#include "structs.h"
 
 int main() {
   // initial setting
@@ -15,10 +15,8 @@ int main() {
 
   Speed_and_scale speed_and_scale{25, 2};
 
-  // TODO uniformare la sintassi di inizializzazione (= vs {})
   bool throw_pressed{false};
   bool normal_distribution_pressed{false};
-
   unsigned int frame_index{0};
 
   std::vector<Point> animation_positions{};
@@ -30,7 +28,7 @@ int main() {
   sf::VertexArray horizontal_line(sf::Lines, 2);
   sf::VertexArray vertical_line(sf::Lines, 2);
 
-  // images of the gaussians
+  // images of the gaussian distribution
   sf::Texture gauss_output_texture;
   sf::Sprite gauss_output_sprite;
 
@@ -58,7 +56,7 @@ int main() {
       }
     }
 
-    // updating in runtime the possible values for the slider
+    // updating in runtime the possible values for the y_0 slider
     sliderUpdate(gui);
 
     // press the button "Throw"
@@ -66,6 +64,8 @@ int main() {
       Setup setup(gui);
       setup.run(ball, animation_positions, speed_and_scale, gui, top_line,
                 bottom_line);
+
+      // set frame_index and throw_pressed so that after a click it restarts
       frame_index = 0;
       throw_pressed = false;
     };
@@ -109,24 +109,3 @@ int main() {
   }
   return 0;
 }
-
-/*cosa dobbiamo fare:
-
-ottimizzare, migliorare leggibilità, togliere file inutili,
-
-facoltativo: implementare linea tratteggiata per percorso,
-separare parte gaussiane con resto,
-
-possibilità di salvare i grafici da qualche altra parte,
-miglorare nomi.
-
-creazione funzione per disegnare le linee dentro il while
-
-problema: in getfinalpoint calcola, per motivi a noi ignoti, angolo e posizione
-finale girati di segno
-
-
-REDNDERE SETUP UNA CLASSE
-rendere SPEED E SCALE UNA STRUCT
-Cambiare il nome della leegnda
-*/

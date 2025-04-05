@@ -29,7 +29,7 @@ find_package(TGUI 1.0 REQUIRED)
 
 
 
-add_executable( biliardo main.cpp functionDefinitions.cpp graphic.cpp setup.cpp)
+add_executable( biliardo main.cpp geometrical_methods.cpp graphic.cpp setup.cpp)
 
 # target_compile_options(bilardo PRIVATE ${ROOT_CFLAGS})
 target_link_libraries( biliardo PRIVATE sfml-graphics sfml-window sfml-system tgui ROOT::Hist ROOT::Gpad)
@@ -40,7 +40,7 @@ target_link_libraries( biliardo PRIVATE sfml-graphics sfml-window sfml-system tg
 if (BUILD_TESTING)
 
   # aggiungi l'eseguibile all.t
-  add_executable(biliardo_test test.cpp functionDefinitions.cpp graphic.cpp setup.cpp)
+  add_executable(biliardo_test test.cpp geometrical_methods.cpp graphic.cpp setup.cpp)
  target_link_libraries(biliardo_test PRIVATE  sfml-graphics sfml-window sfml-system tgui ROOT::Hist ROOT::Gpad)
   # # aggiungi l'eseguibile all.t alla lista dei test
   add_test(NAME biliardo_test COMMAND biliardo_test)

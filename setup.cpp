@@ -4,9 +4,9 @@
 #include <TGUI/TGUI.hpp>
 #include <stdexcept>
 
-#include "ForwardDeclaration.h"
 #include "TH1F.h"
-#include "structs.h"
+#include "geometrical_entities.h"
+#include "geometrical_methods.h"
 
 Setup::Setup(const tgui::Gui &gui)
     : m_y_0(-gui.get<tgui::EditBoxSlider>("y_0")->getValue()),
@@ -95,13 +95,14 @@ void Setup::getNormalDistribution(tgui::Gui &gui) {
     float theta = static_cast<float>(gRandom->Gaus(m_theta_0, sigma_theta_0));
     float y = static_cast<float>(gRandom->Gaus(m_y_0, sigma_y_0));
 
-    Setup setup_gaus{y, theta, m_l, m_r_1, m_r_2};
-    System system(setup_gaus);  // here the setup is flipped twice
+    Setup setup_gaus{y, theta, m_l, m_r_1,
+                     m_r_2};  // here the setup is flipped twice
+    System system(setup_gaus);
 
     Point last_interception{0, 0};
     Point new_interception{calculateFirstHit(setup_gaus.get_l(), system)};
 
-    calculateFinalPoint(new_interception, last_interception, system,
+    nThrowsSimulation(new_interception, last_interception, system,
                         setup_gaus.get_l(), h1, h2);
   }
 

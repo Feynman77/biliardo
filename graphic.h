@@ -9,7 +9,6 @@
 #include <TGUI/Widgets/EditBoxSlider.hpp>
 #include <TGUI/Widgets/Panel.hpp>
 #include <TGUI/Widgets/Picture.hpp>
-//struct Setup;
 
 void setWindow(sf::RenderWindow& window, sf::CircleShape& ball,
                sf::VertexArray& hor_line, sf::VertexArray& vert_line,
@@ -25,7 +24,5 @@ auto createLabel(const std::string& text, const float& x, const float& y);
 auto createEditBox(const std::string& text, const float& x, const float& y);
 
 void fillGui(tgui::Gui& gui);
-
-
 
 #endif
