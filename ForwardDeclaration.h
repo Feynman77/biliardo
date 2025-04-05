@@ -5,8 +5,8 @@
 
 #include <cmath>
 #include <vector>
+
 #include "structs.h"
-#include "graphic.h"
 
 // struct Line {
 //   double slope;
@@ -51,10 +51,6 @@ Point findInterception(const Line &l_1, const Line &l_2);
 
 Point calculateFirstHit(const double &l, const System &system);
 
-void fillVector(std::vector<Point> &positions, const Point &last_interception,
-                const Point &new_interception, const Line &path,
-                const Speed_and_scale &speed_and_scale, const double &l);
-
 Angle_and_point getFinalPoint(Point &new_interception, Point &last_interception,
                               const System &system, const double &l,
                               std::vector<Point> &positions,
@@ -64,7 +60,11 @@ void calculateFinalPoint(Point &new_interception, Point &last_interception,
                          const System &system, const double &l, TH1F &h1,
                          TH1F &h2);
 
-//void getNormalDistribution(const Setup &setup, tgui::Gui &gui);
+void fillVector(std::vector<Point> &positions, const Point &last_interception,
+                const Point &new_interception, const Line &path,
+                const Speed_and_scale &speed_and_scale, const double &l);
+
+// void getNormalDistribution(const Setup &setup, tgui::Gui &gui);
 
 // void run(sf::CircleShape &ball, std::vector<Point> &positions,
 //          Speed_and_scale &speed_and_scale, tgui::Gui &gui,

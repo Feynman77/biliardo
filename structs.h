@@ -1,58 +1,47 @@
 #ifndef STRUCTS_H
 #define STRUCTS_H
-#include <TGUI/TGUI.hpp>
 #include <TGUI/Backend/SFML-Graphics.hpp>
+#include <TGUI/TGUI.hpp>
 #include <cmath>
 
-struct Point
-{
+struct Point {
   double x;
   double y;
 };
-
-struct Angle_and_point
-{
+struct Angle_and_point {
   double theta;
   double y;
 };
-
-struct Line
-{
+struct Line {
   double slope;
   double q;
 
   Line(float slope_input, float q_input) : slope(slope_input), q(q_input) {}
-  Line(const Point &p_1, const Point &p_2) : slope((p_2.y - p_1.y) / (p_2.x - p_1.x)), q(p_1.y - slope * p_1.x) {}
-  Line(const Angle_and_point &a_p) : slope(tan(a_p.theta * M_PI / 180)), q(a_p.y) {}
+  Line(const Point &p_1, const Point &p_2)
+      : slope((p_2.y - p_1.y) / (p_2.x - p_1.x)), q(p_1.y - slope * p_1.x) {}
+  Line(const Angle_and_point &a_p)
+      : slope(tan(a_p.theta * M_PI / 180)), q(a_p.y) {}
 };
 
-struct Speed_and_scale
-{
+struct Speed_and_scale {
   float speed;
   float scale;
 };
 
-// struct Setup {
-//   float y_0;
-//   float theta_0;
-//   float l;
-//   float r_1;
-//   float r_2;
-// };
-
-class Setup
-{
-private:
+class Setup {
+ private:
   float m_y_0;
   float m_theta_0;
   float m_l;
   float m_r_1;
   float m_r_2;
 
-public:
+ public:
   Setup(const tgui::Gui &gui);
+
   Setup(const float &y_0, const float &theta_0, const float &l,
         const float &r_1, const float &r_2);
+
   float get_y_0() const { return m_y_0; }
   float get_theta_0() const { return m_theta_0; }
   float get_l() const { return m_l; }
@@ -64,18 +53,20 @@ public:
            sf::VertexArray &top_line, sf::VertexArray &bottom_line);
 
   void getNormalDistribution(tgui::Gui &gui);
+
   void makeDrawableSystem(sf::CircleShape &ball, sf::VertexArray &top_line,
-                          sf::VertexArray &bottom_line,
-                          const float &scale);
+                          sf::VertexArray &bottom_line, const float &scale);
 };
 
-struct System
-{
+struct System {
   Line top_line;
   Line bottom_line;
   Line first_throw;
 
-  System(Line top_line_input, Line bottom_line_input, Line first_throw_input) : top_line(top_line_input), bottom_line(bottom_line_input), first_throw(first_throw_input) {}
+  System(Line top_line_input, Line bottom_line_input, Line first_throw_input)
+      : top_line(top_line_input),
+        bottom_line(bottom_line_input),
+        first_throw(first_throw_input) {}
 
   System(const Setup &s)
       : top_line({0, s.get_r_1()}, {s.get_l(), s.get_r_2()}),

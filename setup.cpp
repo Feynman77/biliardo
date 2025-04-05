@@ -1,10 +1,12 @@
 
-#include "setup.h"
+#include <TRandom.h>
+
+#include <TGUI/TGUI.hpp>
+#include <stdexcept>
+
 #include "ForwardDeclaration.h"
 #include "TH1F.h"
-#include <TRandom.h>
-#include <stdexcept>
-#include <TGUI/TGUI.hpp>
+#include "structs.h"
 
 Setup::Setup(const tgui::Gui &gui)
     : m_y_0(-gui.get<tgui::EditBoxSlider>("y_0")->getValue()),
@@ -14,50 +16,70 @@ Setup::Setup(const tgui::Gui &gui)
       m_r_2(gui.get<tgui::EditBoxSlider>("r_2")->getValue()) {}
 
 Setup::Setup(const float &y_0, const float &theta_0, const float &l,
-             const float &r_1, const float &r_2) : m_y_0(-y_0),
-                                                   m_theta_0(-theta_0),
-                                                   m_l(l),
-                                                   m_r_1(r_1),
-                                                   m_r_2(r_2)
-{
+             const float &r_1, const float &r_2)
+    : m_y_0(-y_0), m_theta_0(-theta_0), m_l(l), m_r_1(r_1), m_r_2(r_2) {}
+
+// making system drawable
+void Setup::makeDrawableSystem(sf::CircleShape &ball, sf::VertexArray &top_line,
+                               sf::VertexArray &bottom_line,
+                               const float &scale) {
+  Setup s = *this;
+
+  // creation of top line
+  top_line[0].position = sf::Vector2f(0, scale * s.get_r_1());
+  top_line[0].color = sf::Color::White;
+  top_line[1].position = sf::Vector2f(scale * s.get_l(), scale * s.get_r_2());
+  top_line[1].color = sf::Color::White;
+
+  // creation of the bottom line
+  bottom_line[0].position = sf::Vector2f(0, -scale * s.get_r_1());
+  bottom_line[0].color = sf::Color::White;
+  bottom_line[1].position =
+      sf::Vector2f(scale * s.get_l(), -scale * s.get_r_2());
+  bottom_line[1].color = sf::Color::White;
+
+  // creation of the ball
+  ball.setPosition(0, scale * s.get_y_0());
+  ball.setFillColor(sf::Color::Green);
+  ball.setOrigin(ball.getRadius(), ball.getRadius());
 }
 
-void Setup::run(sf::CircleShape &ball, std::vector<Point> &positions,
+// running the program
+void Setup::run(sf::CircleShape &ball, std::vector<Point> &animation_positions,
                 Speed_and_scale &speed_and_scale, tgui::Gui &gui,
-                sf::VertexArray &top_line, sf::VertexArray &bottom_line)
-{
-  positions.clear();
+                sf::VertexArray &top_line, sf::VertexArray &bottom_line) {
+  animation_positions.clear();
+  Setup setup = (gui);
 
   // rescaling speed and scale  in base  of the  higest parameter
-  float scale_reference = std::max({m_l / 30, m_r_1 / 8, m_r_2 / 8});
+  float scale_reference =
+      std::max({setup.get_l() / 30, setup.get_r_1() / 8, setup.get_r_2() / 8});
   speed_and_scale.scale = 25 / scale_reference;
   speed_and_scale.speed = 1.5f * scale_reference;
-  makeDrawableSystem(ball, top_line, bottom_line, speed_and_scale.scale);
+  setup.makeDrawableSystem(ball, top_line, bottom_line, speed_and_scale.scale);
 
-  System system(*this);
+  System system(setup);
 
   Point last_interception{0, 0};
-  Point new_interception{calculateFirstHit(m_l, system)};
+  Point new_interception{calculateFirstHit(setup.get_l(), system)};
 
   Angle_and_point result =
-      getFinalPoint(new_interception, last_interception, system, m_l, positions,
-                    speed_and_scale);
-  if (result.y == 0 && result.theta == 180)
-  {
+      getFinalPoint(new_interception, last_interception, system, setup.get_l(),
+                    animation_positions, speed_and_scale);
+  if (result.y == 0 && result.theta == 180) {
     gui.get<tgui::EditBox>("Final angle")->setText("Invalid throw");
     gui.get<tgui::EditBox>("Final point")->setText("Invalid throw");
-  }
-  else
-  {
+  } else {
     gui.get<tgui::EditBox>("Final angle")
         ->setText(std::to_string(result.theta));
     gui.get<tgui::EditBox>("Final point")
-        ->setText(std::to_string(m_l) + ";" + std::to_string(result.y));
+        ->setText(std::to_string(setup.get_l()) + ";" +
+                  std::to_string(result.y));
   }
 }
 
-void Setup::getNormalDistribution(tgui::Gui &gui)
-{
+// drowing the histograms of the normal distributions
+void Setup::getNormalDistribution(tgui::Gui &gui) {
   // defining the inputs from the sliders
   float sigma_y_0 = gui.get<tgui::EditBoxSlider>("sigma y_0")->getValue();
   float sigma_theta_0 =
@@ -65,16 +87,16 @@ void Setup::getNormalDistribution(tgui::Gui &gui)
   int n = static_cast<int>(gui.get<tgui::EditBoxSlider>("n")->getValue());
 
   // creation of the histograms
-  TH1F h1("Isto1", "Final points", 20, -m_r_2, m_r_2);
-  TH1F h2("Isto2", "Final angles", 100, -M_PI, M_PI);
+  TH1F h1("Legend", "Final points", 20, -m_r_2, m_r_2);
+  TH1F h2("Legend", "Final angles", 100, -90, 90);
 
   // filling the histograms n times
-  for (int i{0}; i < n; i++)
-  {
+  for (int i{0}; i < n; i++) {
     float theta = static_cast<float>(gRandom->Gaus(m_theta_0, sigma_theta_0));
     float y = static_cast<float>(gRandom->Gaus(m_y_0, sigma_y_0));
+
     Setup setup_gaus{y, theta, m_l, m_r_1, m_r_2};
-    System system(setup_gaus);
+    System system(setup_gaus);  // here the setup is flipped twice
 
     Point last_interception{0, 0};
     Point new_interception{calculateFirstHit(setup_gaus.get_l(), system)};
@@ -107,29 +129,4 @@ void Setup::getNormalDistribution(tgui::Gui &gui)
       ->setText(std::to_string(h2.GetSkewness()));
   gui.get<tgui::EditBox>("Angle kurtosis")
       ->setText(std::to_string(h2.GetKurtosis()));
-}
-
-void Setup::makeDrawableSystem(sf::CircleShape &ball, sf::VertexArray &top_line,
-                               sf::VertexArray &bottom_line,
-                               const float &scale)
-{
-  // creation of top line
-  Setup s = *this;
-  top_line[0].position = sf::Vector2f(0, scale * s.get_r_1());
-  top_line[0].color = sf::Color::White;
-  top_line[1].position = sf::Vector2f(scale * s.get_l(), scale * s.get_r_2());
-  top_line[1].color = sf::Color::White;
-
-  // creation of the bottom line
-  bottom_line[0].position = sf::Vector2f(0, -scale * s.get_r_1());
-  bottom_line[0].color = sf::Color::White;
-  bottom_line[1].position =
-      sf::Vector2f(scale * s.get_l(), -scale * s.get_r_2());
-  bottom_line[1].color = sf::Color::White;
-
-  // creation of the ball
-
-  ball.setPosition(0, scale * s.get_y_0());
-  ball.setFillColor(sf::Color::Green);
-  ball.setOrigin(ball.getRadius(), ball.getRadius());
 }

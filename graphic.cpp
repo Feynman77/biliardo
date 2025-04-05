@@ -100,13 +100,9 @@ void fillGui(tgui::Gui& gui) {
   gui.add(createLabel("Angle of incidence", 280, 850 - 25), "label_f_angle");
 }
 
-// make the drawable system
-// RIVEDEREEE
-
-
 // setting the layout for the opening window
 void setWindow(sf::RenderWindow& window, sf::CircleShape& ball,
-               sf::VertexArray& hor_line, sf::VertexArray& vert_line,
+               sf::VertexArray& horizontal_line, sf::VertexArray& vertical_line,
                sf::Sprite& gauss_output_sprite) {
   ball.setFillColor(sf::Color::Black);
   ball.setOutlineColor(sf::Color::Black);
@@ -128,16 +124,16 @@ void setWindow(sf::RenderWindow& window, sf::CircleShape& ball,
       sf::Vector2i(static_cast<int>(posX), static_cast<int>(posY)));
 
   // creation of horizontal line for layout
-  hor_line[0].position = sf::Vector2f(-800, -228);
-  hor_line[0].color = sf::Color::White;
-  hor_line[1].position = sf::Vector2f(800, -228);
-  hor_line[1].color = sf::Color::White;
+  horizontal_line[0].position = sf::Vector2f(-800, -228);
+  horizontal_line[0].color = sf::Color::White;
+  horizontal_line[1].position = sf::Vector2f(800, -228);
+  horizontal_line[1].color = sf::Color::White;
 
   // creation of vertical line for layout
-  vert_line[0].position = sf::Vector2f(-50, -1000);
-  vert_line[0].color = sf::Color::White;
-  vert_line[1].position = sf::Vector2f(-50, 1000);
-  vert_line[1].color = sf::Color::White;
+  vertical_line[0].position = sf::Vector2f(-50, -1000);
+  vertical_line[0].color = sf::Color::White;
+  vertical_line[1].position = sf::Vector2f(-50, 1000);
+  vertical_line[1].color = sf::Color::White;
 
   // setting the position and dimension of the sprite
   gauss_output_sprite.setPosition(-50, -700);

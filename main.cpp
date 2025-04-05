@@ -3,7 +3,8 @@
 #include <string>
 
 #include "ForwardDeclaration.h"
-#include "setup.h"
+#include "graphic.h"
+#include "structs.h"
 
 int main() {
   // initial setting
@@ -11,6 +12,7 @@ int main() {
                           sf::Style::Titlebar | sf::Style::Close};
   tgui::Gui gui{window};
   fillGui(gui);
+
   Speed_and_scale speed_and_scale{25, 2};
 
   // TODO uniformare la sintassi di inizializzazione (= vs {})
@@ -25,18 +27,20 @@ int main() {
   sf::CircleShape ball(1);
   sf::VertexArray top_line(sf::Lines, 2);
   sf::VertexArray bottom_line(sf::Lines, 2);
-  sf::VertexArray hor_line(sf::Lines, 2);
-  sf::VertexArray vert_line(sf::Lines, 2);
+  sf::VertexArray horizontal_line(sf::Lines, 2);
+  sf::VertexArray vertical_line(sf::Lines, 2);
 
+  // images of the gaussians
   sf::Texture gauss_output_texture;
   sf::Sprite gauss_output_sprite;
 
-  setWindow(window, ball, hor_line, vert_line, gauss_output_sprite);
+  setWindow(window, ball, horizontal_line, vertical_line, gauss_output_sprite);
 
   gui.get<tgui::Button>("gauss")->onClick(
       [&]() { normal_distribution_pressed = true; });
   gui.get<tgui::Button>("run")->onClick([&]() { throw_pressed = true; });
 
+  // while loop for the open window
   while (window.isOpen()) {
     sf::Event event;
 
@@ -54,24 +58,27 @@ int main() {
       }
     }
 
+    // updating in runtime the possible values for the slider
+    sliderUpdate(gui);
+
     // press the button "Throw"
     if (throw_pressed == true) {
       Setup setup(gui);
       setup.run(ball, animation_positions, speed_and_scale, gui, top_line,
-          bottom_line);
+                bottom_line);
       frame_index = 0;
       throw_pressed = false;
     };
 
     // press the button "Run"
     if (normal_distribution_pressed == true) {
-      normal_distribution_pressed = false;
-
       Setup setup(gui);
       setup.getNormalDistribution(gui);
 
       gauss_output_texture.loadFromFile("histos.png");
       gauss_output_sprite.setTexture(gauss_output_texture);
+
+      normal_distribution_pressed = false;
     };
 
     // animation of the ball
@@ -89,11 +96,10 @@ int main() {
       frame_index = 0;
     }
 
-    sliderUpdate(gui);
-
+    // drawing the filled window
     window.clear();
-    window.draw(hor_line);
-    window.draw(vert_line);
+    window.draw(horizontal_line);
+    window.draw(vertical_line);
     window.draw(top_line);
     window.draw(bottom_line);
     window.draw(ball);
@@ -122,4 +128,5 @@ finale girati di segno
 
 REDNDERE SETUP UNA CLASSE
 rendere SPEED E SCALE UNA STRUCT
+Cambiare il nome della leegnda
 */
