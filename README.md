@@ -15,7 +15,7 @@ SFML, TGui, Root
 
 ### Installazione
 
-Per clonare l'intera repository bisogna utilizzare:
+Se si hanno già scaricate tutte le librerie sopracitate, per clonare l'intera repository bisogna utilizzare:
 ```
 git clone https://github.com/feynman77/biliardo.git
 
