@@ -66,7 +66,6 @@ struct System {
   Line first_throw;
 
   // constructor overload
-
   System(Line top_line_input, Line bottom_line_input, Line first_throw_input)
       : top_line(top_line_input),
         bottom_line(bottom_line_input),

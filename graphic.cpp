@@ -2,7 +2,7 @@
 
 #include "geometrical_methods.h"
 
-// creation of a Tgui boxslider
+// creation of a Tgui BoxSlider
 auto createBoxSlider(const float& maximum, const float& minimum, const float& x,
                      const float& y) {
   auto boxSlider = tgui::EditBoxSlider::create(minimum, maximum);
@@ -15,7 +15,7 @@ auto createBoxSlider(const float& maximum, const float& minimum, const float& x,
   return boxSlider;
 }
 
-// creation of a Tgui button
+// creation of a Tgui Button
 auto createButton(const float& x, const float& y, const char* name) {
   auto button = tgui::Button::create(name);
   button->setPosition(x, y);
@@ -25,7 +25,7 @@ auto createButton(const float& x, const float& y, const char* name) {
   return button;
 }
 
-// creation of a Tgui label
+// creation of a Tgui Label
 auto createLabel(const std::string& text, const float& x, const float& y) {
   auto label = tgui::Label::create(text);
   label->setPosition(x, y);
@@ -34,7 +34,7 @@ auto createLabel(const std::string& text, const float& x, const float& y) {
   return label;
 }
 
-// creation of a Tgui editbox
+// creation of a Tgui EditBox
 auto createEditBox(const std::string& text, const float& x, const float& y) {
   auto editbox = tgui::EditBox::create();
   editbox->setPosition(x, y);
@@ -45,7 +45,7 @@ auto createEditBox(const std::string& text, const float& x, const float& y) {
   return editbox;
 }
 
-// filling the TGui gui
+// filling the TGui Gui
 void fillGui(tgui::Gui& gui) {
   // edit for motion
   gui.add(createBoxSlider(90, -90, 30, 550), "theta_0");

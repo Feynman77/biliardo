@@ -227,8 +227,8 @@ Angle_and_point getFinalPoint(Point &new_interception, Point &last_interception,
 
 // calculation of the final point and filling the histograms
 void nThrowsSimulation(Point &new_interception, Point &last_interception,
-                         const System &system, const double &l, TH1F &h1,
-                         TH1F &h2) {
+                       const System &system, const double &l, TH1F &h1,
+                       TH1F &h2) {
   Line path(static_cast<float>(system.first_throw.slope),
             static_cast<float>(system.first_throw.q));
 
@@ -301,6 +301,6 @@ void sliderUpdate(tgui::Gui &gui) {
   float r_1 = gui.get<tgui::EditBoxSlider>("r_1")->getValue();
   gui.get<tgui::EditBoxSlider>("y_0")->setMaximum(r_1 - 0.01f);
   gui.get<tgui::EditBoxSlider>("y_0")->setMinimum(-r_1 + 0.01f);
-  gui.get<tgui::EditBoxSlider>("sigma y_0")->setMaximum(r_1/2);
-  gui.get<tgui::EditBoxSlider>("sigma y_0")->setMinimum(-r_1/2);
+  gui.get<tgui::EditBoxSlider>("sigma y_0")->setMaximum(r_1 / 2);
+  gui.get<tgui::EditBoxSlider>("sigma y_0")->setMinimum(-r_1 / 2);
 }

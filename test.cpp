@@ -200,4 +200,16 @@ TEST_CASE("Testing getFinalPoint") {
     CHECK(result.y == doctest::Approx(0));
     CHECK(result.theta == doctest::Approx(45));
   }
+  SUBCASE("Ball goes back") {
+    Setup setup = {0, 45, 55, 10, 3};
+    System system(setup);
+    Point last_interception{0, 0};
+    Point new_interception{calculateFirstHit(55, system)};
+    std::vector<Point> positions;
+    Angle_and_point result =
+        getFinalPoint(new_interception, last_interception, system, 55,
+                      positions, speed_and_scale);
+    CHECK(result.y == doctest::Approx(0));
+    CHECK(result.theta == doctest::Approx(180));
+  }
 }

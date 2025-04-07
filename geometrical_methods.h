@@ -22,8 +22,8 @@ Angle_and_point getFinalPoint(Point &new_interception, Point &last_interception,
                               const Speed_and_scale &speed_and_scale);
 
 void nThrowsSimulation(Point &new_interception, Point &last_interception,
-                         const System &system, const double &l, TH1F &h1,
-                         TH1F &h2);
+                       const System &system, const double &l, TH1F &h1,
+                       TH1F &h2);
 
 void sliderUpdate(tgui::Gui &gui);
 #endif
