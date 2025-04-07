@@ -301,4 +301,6 @@ void sliderUpdate(tgui::Gui &gui) {
   float r_1 = gui.get<tgui::EditBoxSlider>("r_1")->getValue();
   gui.get<tgui::EditBoxSlider>("y_0")->setMaximum(r_1 - 0.01f);
   gui.get<tgui::EditBoxSlider>("y_0")->setMinimum(-r_1 + 0.01f);
+  gui.get<tgui::EditBoxSlider>("sigma y_0")->setMaximum(r_1/2);
+  gui.get<tgui::EditBoxSlider>("sigma y_0")->setMinimum(-r_1/2);
 }

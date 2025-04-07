@@ -49,9 +49,9 @@ auto createEditBox(const std::string& text, const float& x, const float& y) {
 void fillGui(tgui::Gui& gui) {
   // edit for motion
   gui.add(createBoxSlider(90, -90, 30, 550), "theta_0");
-  gui.add(createBoxSlider(100, 0, 30, 650), "r_1");
+  gui.add(createBoxSlider(100, 0.01f, 30, 650), "r_1");
   gui.add(createBoxSlider(100, 0, 280, 550), "y_0");
-  gui.add(createBoxSlider(100, 0, 280, 650), "r_2");
+  gui.add(createBoxSlider(100, 0.01f, 280, 650), "r_2");
   gui.add(createBoxSlider(1000, 0, 30, 750), "l");
   gui.add(createButton(280, 750, "Throw"), "run");
 

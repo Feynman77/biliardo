@@ -98,12 +98,13 @@ void Setup::getNormalDistribution(tgui::Gui &gui) {
     Setup setup_gaus{y, theta, m_l, m_r_1,
                      m_r_2};  // here the setup is flipped twice
     System system(setup_gaus);
+    if (std::abs(y) < m_r_1) {
+      Point last_interception{0, 0};
+      Point new_interception{calculateFirstHit(setup_gaus.get_l(), system)};
 
-    Point last_interception{0, 0};
-    Point new_interception{calculateFirstHit(setup_gaus.get_l(), system)};
-
-    nThrowsSimulation(new_interception, last_interception, system,
+      nThrowsSimulation(new_interception, last_interception, system,
                         setup_gaus.get_l(), h1, h2);
+    }
   }
 
   // drawing histograms and final outputs on the Gui
